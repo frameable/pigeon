@@ -2,6 +2,7 @@ const assert = require('assert');
 
 const diff = require('./diff');
 const patch = require('./patch');
+const reverse = require('./reverse');
 
 /* DIFF */
 
@@ -26,7 +27,7 @@ assert.deepEqual(
   [ { op: 'remove', path: '/title', _prev: 'hello' } ]
 );
 
-// object property remove
+// object property replace
 assert.deepEqual(
   diff({ id: 1, title: 'hello' }, { id: 1, title: 'salut' }),
   [ { op: 'replace', path: '/title', value: 'salut', _prev: 'hello' } ]
@@ -147,6 +148,19 @@ assert.deepEqual(
 );
 
 
+/* REVERSE */
 
+assert.deepEqual(
+  reverse(
+    [ { op: 'replace', path: '/name', value: 'henry', _prev: 'hank' } ]
+  ),
+  [ { op: 'replace', path: '/name', value: 'hank', _prev: 'henry' } ]
+);
 
+assert.deepEqual(
+  reverse(
+    [ { op: 'add', path: '/names/0', value: { id: 38, name: 'henry' } } ]
+  ),
+  [ { op: 'remove', path: '/names/[38]', _index: 0, _prev: { id: 38, name: 'henry' } } ]
+);
 
