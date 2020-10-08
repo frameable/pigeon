@@ -1,0 +1,22 @@
+{
+  "name": "pigeon",
+  "version": "1.0.0",
+  "description": "Semantic diff and patch for JSON suitable for CRDT",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/systemsthinkinginstitute/pigeon-json-diff-patch.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/systemsthinkinginstitute/pigeon-json-diff-patch/issues"
+  },
+  "homepage": "https://github.com/systemsthinkinginstitute/pigeon-json-diff-patch#readme"
+}
