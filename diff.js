@@ -110,7 +110,7 @@ function diffObject(l, r, path='/', ref) {
 
   for (k in r) {
     if (!(k in l)) {
-      ops.push({ op: 'add', path: k, value: _clone(r[k]) });
+      ops.push({ op: 'add', path: _path(path, k), value: _clone(r[k]) });
     }
   }
 

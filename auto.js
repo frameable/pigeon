@@ -1,4 +1,6 @@
-const { diff, patch, reverse } = require('./index');
+const diff = require('./diff');
+const patch = require('./patch');
+const reverse = require('./reverse');
 const { _clone } = require('./helpers');
 
 const meta = new WeakMap();
@@ -16,7 +18,7 @@ class AutoPigeon {
   static from(data, cid=_cid) {
     const doc = new AutoPigeon();
     meta.get(doc).cid = cid;
-    Object.assign(doc, data);
+    Object.assign(doc, _clone(data));
     return doc;
   }
 

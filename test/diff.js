@@ -112,6 +112,16 @@ suite('diff', test => {
     );
   });
 
+  test('object add nested property', async () => {
+    assert.deepEqual(
+      diff(
+        { name: 'tulsa' },
+        { name: 'tulsa', districts: ['downtown', 'uptown'] }
+      ),
+      [ { op: 'add', path: '/districts', value: ['downtown', 'uptown'] } ]
+    );
+  })
+
 });
 
 
