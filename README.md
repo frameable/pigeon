@@ -41,31 +41,31 @@ Applies changes to the given data structure, making modifications in-place.
 
 `Pigeon.Auto` is an Automerge-compatible higher-level interface for changing and syncronizing documents.
 
-### newDoc = Auto.from(data, cid=_cid)
+#### newDoc = Auto.from(data, cid=_cid)
 
 Create a document from an array or object.
 
-### newDoc = Auto.clone(doc)
+#### newDoc = Auto.clone(doc)
 
 Clone a document.
 
-### changes = Auto.getChanges(left, right)
+#### changes = Auto.getChanges(left, right)
 
 Get the set of changes that would transform `left` into `right`.
 
-### newDoc = Auto.rewindChanges(doc, ts, cid)
+#### newDoc = Auto.rewindChanges(doc, ts, cid)
 
 Roll back the document state back to the given timestamp.
 
-### newDoc = Auto.fastForwardChanges(doc)
+#### newDoc = Auto.fastForwardChanges(doc)
 
 Roll forward the document state up to the head.
 
-### newDoc = Auto.applyChanges(doc, changes)
+#### newDoc = Auto.applyChanges(doc, changes)
 
 Roll forward the document state up to the head, possibly after applying previous changes.
 
-### newDoc = Auto.change(doc, fn)
+#### newDoc = Auto.change(doc, fn)
 
 Change the document according to the given function, which receivs the document as a parameter.
 
@@ -75,15 +75,15 @@ newDoc = Auto.change(doc, d => d.message = 'hey there');
 changes = Auto.getChanges(doc, newDoc);
 ```
 
-### changes = Auto.getHistory(doc)
+#### changes = Auto.getHistory(doc)
 
 Get all of the changes to recreate the document from scratch.
 
-### newDoc = Auto.load(str)
+#### newDoc = Auto.load(str)
 
 Load the document from its serialized form.
 
-### str = Auto.save(doc)
+#### str = Auto.save(doc)
 
 Serialize the document to be loaded later.
 
