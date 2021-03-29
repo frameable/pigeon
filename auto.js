@@ -69,8 +69,10 @@ class AutoPigeon {
     AutoPigeon.rewindChanges(newDoc, changes.ts, changes.cid);
     patch(newDoc, changes.diff);
     AutoPigeon.fastForwardChanges(newDoc);
-    meta.get(newDoc).history.push(changes);
-    meta.get(newDoc).history.sort((a, b) => a.ts - b.ts);
+    const history = meta.get(newDoc).history;
+    let idx = history.length;
+    while (idx > 0 && history[idx - 1].ts > changes.ts) idx--;
+    history.splice(idx, changes);
     return newDoc;
   }
 
