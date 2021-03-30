@@ -22,9 +22,10 @@ class AutoPigeon {
     return doc;
   }
 
-  static clone(doc) {
+  static clone(doc, historyLength=Infinity) {
     const clone = AutoPigeon.from(doc);
-    meta.get(clone).history.push(...meta.get(doc).history);
+    const history = meta.get(doc).history.slice(-historyLength);
+    meta.get(clone).history.push(...history);
     return clone;
   }
 
@@ -88,8 +89,9 @@ class AutoPigeon {
     return meta.get(doc).history;
   }
 
-  static load(str) {
+  static load(str, historyLength=Infinity) {
     const { meta: _meta, data } = JSON.parse(str);
+    _meta.history = _meta.history.slice(-historyLength);
     const doc = AutoPigeon.from(data);
     Object.assign(meta.get(doc), _meta);
     return doc;

@@ -61,7 +61,52 @@ suite('auto', test => {
     assert.equal(doc.message, 'salut!');
   });
 
+  test('load truncated history', async () => {
+
+    let doc = _counter();
+    doc = AutoPigeon.clone(doc, 10);
+
+    const [ { diff } ] = AutoPigeon.getHistory(doc).slice(-1);
+    assert.deepEqual(diff, [{"op":"replace","path":"/count","value":100,"_prev":99}]);
+
+    assert.equal(doc.count, 100);
+    assert.equal(AutoPigeon.getHistory(doc).length, 10);
+  });
+
+  test('clone', async () => {
+
+    let doc = _counter();
+    doc = AutoPigeon.clone(doc);
+
+    assert.equal(doc.count, 100);
+    assert.equal(AutoPigeon.getHistory(doc).length, 100);
+  });
+
+  test('clone truncated history', async () => {
+
+    let doc = _counter();
+    doc = AutoPigeon.clone(doc, 10);
+
+    const [ { diff } ] = AutoPigeon.getHistory(doc).slice(-1);
+    assert.deepEqual(diff, [{"op":"replace","path":"/count","value":100,"_prev":99}]);
+
+    assert.equal(doc.count, 100);
+    assert.equal(AutoPigeon.getHistory(doc).length, 10);
+
+  });
+
 });
 
 
+function _counter() {
 
+  let doc = AutoPigeon.from({ count: 0 });
+
+  for (let i = 0; i < 100; i++) {
+    const tmp = AutoPigeon.change(doc, d => d.count++);
+    const changes = AutoPigeon.getChanges(doc, tmp);
+    doc = AutoPigeon.applyChanges(doc, changes);
+  }
+
+  return doc;
+}
