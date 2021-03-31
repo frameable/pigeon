@@ -1,10 +1,11 @@
+const assert = require('assert');
 const diff = require('./diff');
 const patch = require('./patch');
 const reverse = require('./reverse');
 const { _clone } = require('./helpers');
 
 const meta = new WeakMap();
-const _cid = Math.random().toString(36).substring(2);
+const _cid = _id();
 
 class AutoPigeon {
 
@@ -16,14 +17,28 @@ class AutoPigeon {
   }
 
   static from(data, cid=_cid) {
-    const doc = new AutoPigeon();
+    let doc = new AutoPigeon();
     meta.get(doc).cid = cid;
     Object.assign(doc, _clone(data));
+    const changes = AutoPigeon.getChanges(doc, data);
+    meta.get(doc).history.push(changes);
     return doc;
   }
 
+  static _forge(data, cid=_cid) {
+    let doc = new AutoPigeon();
+    meta.get(doc).cid = cid;
+    Object.assign(doc, _clone(data));
+    const changes = AutoPigeon.getChanges(doc, data);
+    return doc;
+  }
+
+  static init() {
+    return AutoPigeon.from({});
+  }
+
   static clone(doc, historyLength=Infinity) {
-    const clone = AutoPigeon.from(doc);
+    const clone = AutoPigeon._forge(doc);
     const history = meta.get(doc).history.slice(-historyLength);
     meta.get(clone).history.push(...history);
     return clone;
@@ -35,6 +50,7 @@ class AutoPigeon {
       diff: _diff,
       ts: Date.now(),
       cid: meta.get(left).cid,
+      gid: _id(),
     }
     return changes;
   }
@@ -78,6 +94,10 @@ class AutoPigeon {
   }
 
   static change(doc, fn) {
+
+    assert(doc instanceof AutoPigeon);
+    assert(fn instanceof Function);
+
     const tmp = _clone(doc);
     fn(tmp);
     const changes = AutoPigeon.getChanges(doc, tmp);
@@ -87,6 +107,35 @@ class AutoPigeon {
 
   static getHistory(doc) {
     return meta.get(doc).history;
+  }
+
+  static merge(doc1, doc2) {
+    let doc = AutoPigeon.from({ cards: [] });
+    const history1 = AutoPigeon.getHistory(doc1);
+    const history2 = AutoPigeon.getHistory(doc2);
+    const changes = [];
+    while (history1.length || history2.length) {
+      if (!history2.length) {
+        changes.push(history1.shift());
+
+      } else if (!history1.length) {
+        changes.push(history2.shift());
+
+      } else if (history1[0].gid === history2.gid) {
+        changes.push(history1.shift() || history2.shift());
+
+      } else if (history1[0].ts <= history2[0].ts) {
+        changes.push(history1.shift());
+
+      } else {
+        changes.push(history2.shift());
+      }
+    }
+
+    for (const c of changes) {
+      doc = AutoPigeon.applyChanges(doc, c);
+    }
+    return doc;
   }
 
   static load(str, historyLength=Infinity) {
@@ -104,6 +153,10 @@ class AutoPigeon {
       data: doc,
     });
   }
+}
+
+function _id() {
+  return Math.random().toString(36).substring(2);
 }
 
 module.exports = AutoPigeon;

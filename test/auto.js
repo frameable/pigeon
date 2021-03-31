@@ -53,7 +53,9 @@ suite('auto', test => {
 
   test('save', async () => {
     const doc = AutoPigeon.from({ message: 'salut!' });
-    assert.equal(AutoPigeon.save(doc), '{"meta":{"history":[],"stash":[]},"data":{"message":"salut!"}}');
+    const saved = JSON.parse(AutoPigeon.save(doc));
+    assert(saved.meta.history.length == 1);
+    assert.deepEqual(saved.data, { message: "salut!" });
   });
 
   test('load', async () => {
@@ -79,7 +81,7 @@ suite('auto', test => {
     doc = AutoPigeon.clone(doc);
 
     assert.equal(doc.count, 100);
-    assert.equal(AutoPigeon.getHistory(doc).length, 100);
+    assert.equal(AutoPigeon.getHistory(doc).length, 101);
   });
 
   test('clone truncated history', async () => {
@@ -95,8 +97,32 @@ suite('auto', test => {
 
   });
 
+  test('automerge merge example', async () => {
+
+    let doc1 = AutoPigeon.from({ cards: [] });
+
+    doc1 = AutoPigeon.change(doc1, doc => doc.cards.push({ title: 'Rewrite everything in Clojure', done: false, id: _id() }));
+    doc1 = AutoPigeon.change(doc1, doc => doc.cards.push({ title: 'Rewrite everything in Haskell', done: false, id: _id() }));
+
+    let doc2 = AutoPigeon.from(doc1);
+
+    doc1 = AutoPigeon.change(doc1, doc => doc.cards[0].done = true);
+    doc2 = AutoPigeon.change(doc2, doc => doc.cards.splice(1, 1));
+
+    const doc = AutoPigeon.merge(doc1, doc2);
+
+    assert.equal(AutoPigeon.getHistory(doc).length, 7);
+    assert.equal(doc.cards.length, 1);
+    assert.equal(doc.cards[0].title, 'Rewrite everything in Clojure');
+    assert.equal(doc.cards[0].done, true);
+
+  });
+
 });
 
+function _id() {
+  return Math.random().toString(36).substring(2);
+}
 
 function _counter() {
 
