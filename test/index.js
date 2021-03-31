@@ -9,8 +9,13 @@ require('./diff');
 void async function main() {
   for (const suite of suites) {
     await suite.fn(async (desc, fn) => {
-      await fn();
-      console.log("✓", `[${suite.name}]`, desc);
+      try {
+        await fn();
+        console.log("✓", `[${suite.name}]`, desc);
+      } catch(e) {
+        console.log("✗", `[${suite.name}]`, desc);
+        console.error(e);
+      }
     })
   }
 }();
