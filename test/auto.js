@@ -7,6 +7,14 @@ const sleep = ms => new Promise(done => setTimeout(done, ms));
 
 suite('auto', test => {
 
+  test('from', async () => {
+    let doc = AutoPigeon.from({ cards: [] });
+    const history = AutoPigeon.getHistory(doc);
+    assert.equal(history.length, 1);
+    assert.deepEqual(history[0].diff, [{"op":"add","path":"/cards","value":[]}]);
+    assert.deepEqual(doc, { cards: [] });
+  });
+
   test('in order', async () => {
 
     let doc1 = AutoPigeon.from({ count: 100 });

@@ -19,9 +19,7 @@ class AutoPigeon {
   static from(data, cid=_cid) {
     let doc = new AutoPigeon();
     meta.get(doc).cid = cid;
-    Object.assign(doc, _clone(data));
-    const changes = AutoPigeon.getChanges(doc, data);
-    meta.get(doc).history.push(changes);
+    doc = AutoPigeon.change(doc, doc => Object.assign(doc, data));
     return doc;
   }
 
@@ -48,8 +46,9 @@ class AutoPigeon {
     const _diff = diff(left, right);
     const changes = {
       diff: _diff,
-      ts: Date.now(),
       cid: meta.get(left).cid,
+      ts: Date.now(),
+      seq: _seq(),
       gid: _id(),
     }
     return changes;
@@ -110,7 +109,7 @@ class AutoPigeon {
   }
 
   static merge(doc1, doc2) {
-    let doc = AutoPigeon.from({ cards: [] });
+    let doc = AutoPigeon.from({});
     const history1 = AutoPigeon.getHistory(doc1);
     const history2 = AutoPigeon.getHistory(doc2);
     const changes = [];
@@ -124,8 +123,16 @@ class AutoPigeon {
       } else if (history1[0].gid === history2.gid) {
         changes.push(history1.shift() || history2.shift());
 
-      } else if (history1[0].ts <= history2[0].ts) {
+      } else if (history1[0].ts < history2[0].ts) {
         changes.push(history1.shift());
+
+      } else if (history1[0].ts == history2[0].ts) {
+
+        if (history1[0].seq < history2[0].seq) {
+          changes.push(history1.shift());
+        } else {
+          changes.push(history2.shift());
+        }
 
       } else {
         changes.push(history2.shift());
@@ -157,6 +164,11 @@ class AutoPigeon {
 
 function _id() {
   return Math.random().toString(36).substring(2);
+}
+
+let seq = 0;
+function _seq() {
+  return seq++;
 }
 
 module.exports = AutoPigeon;
