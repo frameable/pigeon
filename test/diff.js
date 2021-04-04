@@ -122,6 +122,26 @@ suite('diff', test => {
     );
   })
 
+  test('null to obj', async () => {
+    assert.deepEqual(
+      diff(
+        { name: null },
+        { name: { first: 'Joseph', last: 'Biden' } }
+      ),
+      [ { op: 'replace', path: '/name', value: { first: 'Joseph', last: 'Biden' }, _prev: null } ]
+    );
+  })
+
+  test('obj to null', async () => {
+    assert.deepEqual(
+      diff(
+        { name: { first: 'Joseph', last: 'Biden' } },
+        { name: null }
+      ),
+      [ { op: 'replace', path: '/name', value: null, _prev: { first: 'Joseph', last: 'Biden' } } ]
+    );
+  })
+
 });
 
 

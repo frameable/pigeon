@@ -100,7 +100,7 @@ function diffObject(l, r, path='/', ref) {
     if (_isPrimitive(l[k])) {
       ops.push(...diffPrimitive(l[k], r[k], _path(path, k), ref));
     } else if (type !== _typeof(r[k])) {
-      throw new Error("can't change from composite type to another");
+      ops.push({ op: 'replace', path: _path(path, k), value: _clone(r[k]), _prev: _clone(l[k]) });
     } else if (type == 'array') {
       ops.push(...diffArray(l[k], r[k], _path(path, k)));
     } else if (type == 'object') {
