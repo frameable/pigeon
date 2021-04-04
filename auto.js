@@ -145,6 +145,10 @@ class AutoPigeon {
     return doc;
   }
 
+  static getMissingDeps(doc) {
+    return false;
+  }
+
   static load(str, historyLength=Infinity) {
     const { meta: _meta, data } = JSON.parse(str);
     _meta.history = _meta.history.slice(-historyLength);
