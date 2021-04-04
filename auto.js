@@ -120,8 +120,8 @@ class AutoPigeon {
       } else if (!history1.length) {
         changes.push(history2.shift());
 
-      } else if (history1[0].gid === history2.gid) {
-        changes.push(history1.shift() || history2.shift());
+      } else if (history1[0].gid === history2[0].gid) {
+        changes.push(history1.shift() && history2.shift());
 
       } else if (history1[0].ts < history2[0].ts) {
         changes.push(history1.shift());

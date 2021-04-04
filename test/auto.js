@@ -105,6 +105,25 @@ suite('auto', test => {
 
   });
 
+  test('merge', async () => {
+
+    let doc1 = AutoPigeon.from({ cards: [] });
+    doc1 = AutoPigeon.change(doc1, d => d.cards.push({ title: 'do refactoring', id: 1 }));
+
+    let doc2 = AutoPigeon.clone(doc1);
+    doc2 = AutoPigeon.change(doc2, d => d.cards.push({ title: 'do quality assurance', id: 2 }));
+
+    let doc3 = AutoPigeon.merge(doc1, doc2);
+
+    assert.deepEqual(doc3, {
+      cards: [
+        { id: 1, title: 'do refactoring' },
+        { id: 2, title: 'do quality assurance' },
+      ]
+    });
+
+  });
+
   test('automerge merge example', async () => {
 
     let doc1 = AutoPigeon.from({ cards: [] });
