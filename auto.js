@@ -37,8 +37,7 @@ class AutoPigeon {
 
   static clone(doc, historyLength=Infinity) {
     const clone = AutoPigeon._forge(doc);
-    const history = meta.get(doc).history.slice(-historyLength);
-    meta.get(clone).history.push(...history);
+    meta.get(clone).history = meta.get(doc).history.slice(-historyLength);
     return clone;
   }
 
