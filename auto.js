@@ -4,6 +4,8 @@ const patch = require('./patch');
 const reverse = require('./reverse');
 const { _clone } = require('./helpers');
 
+let HISTORY_LENGTH = 1000;
+
 const meta = new WeakMap();
 const _cid = _id();
 
@@ -35,7 +37,7 @@ class AutoPigeon {
     return AutoPigeon.from({});
   }
 
-  static clone(doc, historyLength=Infinity) {
+  static clone(doc, historyLength=HISTORY_LENGTH) {
     const clone = AutoPigeon._forge(doc);
     meta.get(clone).history = meta.get(doc).history.slice(-historyLength);
     return clone;
@@ -147,7 +149,11 @@ class AutoPigeon {
     return false;
   }
 
-  static load(str, historyLength=Infinity) {
+  static setHistoryLength(len) {
+    HISTORY_LENGTH = len;
+  }
+
+  static load(str, historyLength=HISTORY_LENGTH) {
     const { meta: _meta, data } = JSON.parse(str);
     _meta.history = _meta.history.slice(-historyLength);
     const doc = AutoPigeon.from(data);
