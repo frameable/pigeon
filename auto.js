@@ -100,8 +100,7 @@ class AutoPigeon {
     const tmp = _clone(doc);
     fn(tmp);
     const changes = AutoPigeon.getChanges(doc, tmp);
-    const newDoc = AutoPigeon.clone(doc);
-    return AutoPigeon.applyChanges(newDoc, changes);
+    return AutoPigeon.applyChanges(doc, changes);
   }
 
   static getHistory(doc) {
