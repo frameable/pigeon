@@ -59,6 +59,36 @@ suite('auto', test => {
 
   });
 
+  test('separate lineage', async () => {
+    let doc1 = AutoPigeon.from({ count: 100 });
+    let doc2 = AutoPigeon.from({ count: 100 });
+    doc3 = AutoPigeon.change(doc2, doc => doc.count = 1000);
+    let c1 = AutoPigeon.getChanges(doc2, doc3);
+    doc4 = AutoPigeon.applyChanges(doc1, c1);
+    assert(doc4.count == 1000);
+  });
+
+  test('update after remove', async () => {
+    const docA0 = AutoPigeon.from({ user: { name: 'Joe' } });
+    const docB0 = AutoPigeon.clone(docA0);
+
+    const docA1 = AutoPigeon.change(docA0, doc => delete doc.user);
+    const docB1 = AutoPigeon.change(docB0, doc => doc.user.name = 'Moe');
+
+    const changeA = AutoPigeon.getChanges(docA0, docA1);
+    const changeB = AutoPigeon.getChanges(docB0, docB1);
+
+    const docA2 = AutoPigeon.applyChanges(docA1, changeB);
+    const docB2 = AutoPigeon.applyChanges(docB1, changeA);
+
+    assert.deepEqual(docA2, {});
+    assert.deepEqual(docB2, {});
+
+    assert(AutoPigeon.getWarning(docA2).match(/patch failed/));
+    assert(AutoPigeon.getWarning(docB2) == null);
+
+  });
+
   test('save', async () => {
     const doc = AutoPigeon.from({ message: 'salut!' });
     const saved = JSON.parse(AutoPigeon.save(doc));
