@@ -69,7 +69,7 @@ Roll forward the document state up to the head, possibly after applying previous
 
 Change the document according to the given function, which receivs the document as a parameter.
 
-```
+```javascript
 doc = Auto.from({ message: 'hello' });
 newDoc = Auto.change(doc, d => d.message = 'hey there');
 changes = Auto.getChanges(doc, newDoc);
