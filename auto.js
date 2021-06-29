@@ -15,6 +15,7 @@ class AutoPigeon {
     meta.set(this, {
       history: [],
       stash: [],
+      warning: null,
     });
   }
 
@@ -82,9 +83,14 @@ class AutoPigeon {
   }
 
   static applyChanges(doc, changes) {
+    meta.get(doc).warning = null;
     const newDoc = AutoPigeon.clone(doc);
     AutoPigeon.rewindChanges(newDoc, changes.ts, changes.cid);
-    patch(newDoc, changes.diff);
+    try {
+      patch(newDoc, changes.diff);
+    } catch (e) {
+      meta.get(newDoc).warning = 'patch failed: ' + e;
+    }
     AutoPigeon.fastForwardChanges(newDoc);
     const history = meta.get(newDoc).history;
     let idx = history.length;
@@ -143,6 +149,10 @@ class AutoPigeon {
       doc = AutoPigeon.applyChanges(doc, c);
     }
     return doc;
+  }
+
+  static getWarning(doc) {
+    return meta.get(doc).warning;
   }
 
   static getMissingDeps(doc) {

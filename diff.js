@@ -89,8 +89,11 @@ function diffObject(l, r, path='/', ref) {
 
   const ops = [];
 
-  for (k in l) {
-    if (!(k in r)) {
+  let keys = Object.keys(l);
+  let len = keys.length;
+  for (let i = 0; i < len; i++){
+    const k = keys[i];
+    if (!(r.hasOwnProperty(k))) {
       ops.push({ op: 'remove', path: _path(path, k), _prev: _clone(l[k]) });
       continue;
     }
@@ -101,15 +104,18 @@ function diffObject(l, r, path='/', ref) {
       ops.push(...diffPrimitive(l[k], r[k], _path(path, k), ref));
     } else if (type !== _typeof(r[k])) {
       ops.push({ op: 'replace', path: _path(path, k), value: _clone(r[k]), _prev: _clone(l[k]) });
-    } else if (type == 'array') {
+    } else if (type === 'array') {
       ops.push(...diffArray(l[k], r[k], _path(path, k)));
-    } else if (type == 'object') {
+    } else if (type === 'object') {
       ops.push(...diffObject(l[k], r[k], _path(path, k), ref));
     }
   }
 
-  for (k in r) {
-    if (!(k in l)) {
+  keys = Object.keys(r);
+  len = keys.length;
+  for (let i = 0; i < len; i++) {
+    const k = keys[i];
+    if (!(l.hasOwnProperty(k))) {
       ops.push({ op: 'add', path: _path(path, k), value: _clone(r[k]) });
     }
   }
