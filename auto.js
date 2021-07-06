@@ -49,7 +49,7 @@ class AutoPigeon {
     const changes = {
       diff: _diff,
       cid: meta.get(left).cid,
-      ts: Date.now(),
+      ts: _ts(),
       seq: _seq(),
       gid: _id(),
     }
@@ -163,6 +163,10 @@ class AutoPigeon {
     HISTORY_LENGTH = len;
   }
 
+  static setTimestamp(fn) {
+    _ts = fn;
+  }
+
   static load(str, historyLength=HISTORY_LENGTH) {
     const { meta: _meta, data } = JSON.parse(str);
     _meta.history = _meta.history.slice(-historyLength);
@@ -182,6 +186,10 @@ class AutoPigeon {
 
 function _id() {
   return Math.random().toString(36).substring(2);
+}
+
+function _ts() {
+  return Date.now();
 }
 
 let seq = 0;
