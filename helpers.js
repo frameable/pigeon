@@ -46,6 +46,25 @@ function _op(op, path, extra) {
   return operation;
 }
 
+function _stable(x) {
+  if (_typeof(x) == 'array') {
+    return `[${x.map(_stable).join(',')}]`;
+  } else if (_typeof(x) == 'object') {
+    return `{${Object.keys(x).sort().map(k =>
+      `${JSON.stringify(k)}:${_stable(x[k])}`).join(',')}}`;
+  } else {
+    return JSON.stringify(x);
+  }
+}
+
+function _hsh(str) {
+  return Math.abs([].reduce.call(str, (p, c, i, a) => (p << 5) - p + a.charCodeAt(i), 0));
+}
+
+function _crc(x) {
+  return _hsh(_stable(x));
+}
+
 module.exports = {
   _path,
   _typeof,
@@ -54,4 +73,6 @@ module.exports = {
   _entangled,
   _objId,
   _op,
+  _stable,
+  _crc,
 }
