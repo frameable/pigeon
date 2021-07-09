@@ -38,7 +38,10 @@ function diffArray(l, r, path='/') {
     for (let j = 0; j < r.length; j++) {
       if (j in rlis) continue;
       if (i in lris) continue;
-      if (_entangled(l[i], r[j])) {
+      if (
+        (_typeof(l[i]) == 'array' && _typeof(r[j]) == 'array' && i == j) ||
+        _entangled(l[i], r[j])
+      ) {
         lris[i] = j;
         rlis[j] = i;
       }
