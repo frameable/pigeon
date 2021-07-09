@@ -85,13 +85,21 @@ class AutoPigeon {
   static applyChanges(doc, changes) {
     meta.get(doc).warning = null;
     const newDoc = AutoPigeon.clone(doc);
-    AutoPigeon.rewindChanges(newDoc, changes.ts, changes.cid);
+    try {
+      AutoPigeon.rewindChanges(newDoc, changes.ts, changes.cid);
+    } catch (e) {
+      meta.get(newDoc).warning = 'rewind failed: ' + e;
+    }
     try {
       patch(newDoc, changes.diff);
     } catch (e) {
       meta.get(newDoc).warning = 'patch failed: ' + e;
     }
-    AutoPigeon.fastForwardChanges(newDoc);
+    try {
+      AutoPigeon.fastForwardChanges(newDoc);
+    } catch (e) {
+      meta.get(newDoc).warning = 'forward failed: ' + e;
+    }
     const history = meta.get(newDoc).history;
     let idx = history.length;
     while (idx > 0 && history[idx - 1].ts > changes.ts) idx--;
