@@ -11,15 +11,7 @@ function reverse(changes) {
       const id = _objId(change.value);
       if (id) {
         change._index = change.path.split('/').pop();
-        const components = change.path.split(/\//).map(c => decodeURIComponent(c));
-        let newPath = [];
-        for (let component of components) {
-          component = component.replace(/\d+$/, `[${id}]`);
-          component = component.replace(/\//, '%2f');
-
-          newPath.push(component);
-        }
-        change.path = newPath.join('/');
+        change.path = change.path.replace(/\d+$/, `[${id}]`)
       }
 
     } else if (change.op == 'remove') {
