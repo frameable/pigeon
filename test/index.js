@@ -5,6 +5,7 @@ require('./patch');
 require('./reverse');
 require('./auto');
 require('./diff');
+require('./helpers');
 
 if ('SUITE' in process.env) {
   suites = suites.filter(s => s.name == process.env.SUITE);

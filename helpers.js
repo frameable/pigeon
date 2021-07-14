@@ -3,7 +3,23 @@ function _path(path, k, o) {
     const id = _objId(o);
     if (id) k = `[${id}]`;
   }
-  k = typeof(k) == 'string' ? k.replace(/\//g, '%2f') : k;
+  return _encodePath(path, k);
+}
+
+function _encodeKey(key) {
+  return typeof(key) == 'string' ? key.replace(/\//g, '%2f') : key;
+}
+
+function _decodeKey(key) {
+  return typeof(key) == 'string' ? key.replace(/%2f/g, '/') : key;
+}
+
+function _decodePath(path) {
+  return path.split('/').map(c => _decodeKey(c))
+}
+
+function _encodePath(path, k) {
+  k = _encodeKey(k);
   return [path, k].filter(x => x != undefined).join('/').replace('//', '/');
 }
 
@@ -76,4 +92,5 @@ module.exports = {
   _op,
   _stable,
   _crc,
+  _decodePath,
 }
