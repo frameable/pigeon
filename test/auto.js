@@ -175,6 +175,23 @@ suite('auto', test => {
 
   });
 
+  test('automerge nested objects example', async() => {
+    let doc1 = AutoPigeon.from({ cards: {} });
+
+    doc1 = AutoPigeon.change(doc1, doc => {
+      if(!doc.foo) doc.foo = {};
+      doc.foo['http://bar'] = { 'baz': 'jaz'}
+    });
+
+    assert.equal(doc1.foo['http://bar'].baz, 'jaz');
+
+    doc1 = AutoPigeon.change(doc1, doc => {
+      doc.foo['http://bar'].baz = 'foo';
+    });
+    assert.equal(doc1.foo['http://bar'].baz, 'foo');
+
+  });
+
 });
 
 function _id() {
