@@ -3,6 +3,7 @@ function _path(path, k, o) {
     const id = _objId(o);
     if (id) k = `[${id}]`;
   }
+  k = typeof(k) == 'string' ? k.replace(/\//g, '%2f') : k;
   return [path, k].filter(x => x != undefined).join('/').replace('//', '/');
 }
 

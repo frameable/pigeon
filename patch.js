@@ -7,7 +7,8 @@ function patch(data, changes) {
   CHANGE:
   for (const change of changes) {
 
-    const components = change.path.split('/');
+    const components = change.path.split('/').map(c => decodeURIComponent(c));
+
     const root = components.shift();
     let tip = components.pop();
 
