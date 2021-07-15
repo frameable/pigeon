@@ -175,7 +175,7 @@ suite('auto', test => {
 
   });
 
-  test('automerge nested objects example', async() => {
+  test('automerge objects with slashes in the key', async() => {
     let doc1 = AutoPigeon.from({ cards: {} });
 
     doc1 = AutoPigeon.change(doc1, doc => {
