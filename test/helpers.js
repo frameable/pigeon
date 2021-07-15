@@ -7,7 +7,7 @@ suite('helpers', test => {
 
   test('encode and decode path', _ => {
     const path = _path('/', 'http://foo.bar', {});
-    assert.equal('/http:%2f%2ffoo.bar', path);
+    assert.equal('/http:~1~1foo.bar', path);
 
     const decodedPath = _decodePath(path);
 

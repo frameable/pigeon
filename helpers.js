@@ -7,11 +7,15 @@ function _path(path, k, o) {
 }
 
 function _encodeKey(key) {
-  return typeof(key) == 'string' ? key.replace(/\//g, '%2f') : key;
+  return typeof(key) == 'string' && (key.indexOf('/') !== -1 || key.indexOf('~') !== -1) ?
+    key.replace(/~/g, '~0').replace(/\//g, '~1') :
+    key;
 }
 
 function _decodeKey(key) {
-  return typeof(key) == 'string' ? key.replace(/%2f/g, '/') : key;
+  return typeof(key) == 'string' && (key.indexOf('~1') !== -1 || key.indexOf('~0') !== -1) ?
+    key.replace(/~1/g, '/').replace(/~0/g, '~') :
+    key;
 }
 
 function _decodePath(path) {
