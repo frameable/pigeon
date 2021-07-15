@@ -1,4 +1,4 @@
-const { _typeof, _clone, _objId } = require('./helpers');
+const { _typeof, _clone, _objId, _decodePath } = require('./helpers');
 
 function patch(data, changes) {
 
@@ -7,7 +7,8 @@ function patch(data, changes) {
   CHANGE:
   for (const change of changes) {
 
-    const components = change.path.split('/');
+    const components = _decodePath(change.path);
+
     const root = components.shift();
     let tip = components.pop();
 
