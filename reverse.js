@@ -11,7 +11,7 @@ function reverse(changes) {
       const id = _objId(change.value);
       if (id) {
         change._index = change.path.split('/').pop();
-        change.path = change.path.replace(/\d+$/, `[${id}]`)
+        change.path = change.path.replace(/\d+$/, `[${id}]`);
       }
 
     } else if (change.op == 'remove') {
