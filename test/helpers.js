@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { _decodePath, _path } = require('../helpers');
+const { _decodePath, _path } = require('../lib/cjs/helpers.js');
 
 const suite = require("./index");
 

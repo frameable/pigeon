@@ -2,7 +2,6 @@ import { _typeof, _clone, _objId, _decodePath } from './helpers';
 import { Operation } from './diff';
 
 function patch(data: any | any[], changes: Operation[]) {
-
   const conflicts = [];
 
   CHANGE:
@@ -10,7 +9,8 @@ function patch(data: any | any[], changes: Operation[]) {
 
     const components = _decodePath(change.path);
     // if (!components.length) continue CHANGE
-    let tip = (components.pop() as string);
+    components.shift();
+    let tip = components.pop() as string;
 
     let head = data;
 

@@ -1,7 +1,7 @@
 const assert = require('assert');
 const suite = require("./index");
 
-const AutoPigeon = require('../auto');
+const { AutoPigeon } = require('../lib/cjs/auto');
 
 const sleep = ms => new Promise(done => setTimeout(done, ms));
 

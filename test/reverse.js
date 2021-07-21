@@ -1,5 +1,5 @@
 const assert = require('assert');
-const reverse = require('../reverse');
+const { reverse } = require('../lib/cjs/reverse');
 
 const suite = require("./index");
 
