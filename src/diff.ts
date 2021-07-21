@@ -1,6 +1,7 @@
 import { _path, _typeof, _isPrimitive, _clone, _entangled, _objId, _op } from './helpers';
+import { Primitive, Operation } from './types';
 
-function diff(left: any[] | any, right: any[] | any) {
+function diff(left: any, right: any) {
 
   const type = _typeof(left);
 
@@ -20,7 +21,7 @@ function diff(left: any[] | any, right: any[] | any) {
 
 }
 
-function diffPrimitive(l: any, r: any, path='/') {
+function diffPrimitive(l: Primitive, r: Primitive, path='/') {
   if (l !== r) {
     return [_op('replace', _path(path), { value: r,  _prev: l, })];
   } else {
@@ -29,8 +30,8 @@ function diffPrimitive(l: any, r: any, path='/') {
 }
 
 function diffArray(l: any[], r: any[], path='/') {
-  const lris: {[key: number]: any} = {};
-  const rlis: {[key: number]: any} = {};
+  const lris: {[key: number]: number} = {};
+  const rlis: {[key: number]: number} = {};
 
   for (let i = 0; i < l.length; i++) {
     for (let j = 0; j < r.length; j++) {
@@ -85,14 +86,6 @@ function diffArray(l: any[], r: any[], path='/') {
   return ops;
 }
 
-interface Operation {
-  op: string
-  path: string
-  value?: any
-  _prev?: any
-  _index?: string
-}
-
 function diffObject(l: any, r: any, path='/'): Operation[] {
 
   const ops = [];
@@ -131,4 +124,4 @@ function diffObject(l: any, r: any, path='/'): Operation[] {
   return ops
 }
 
-export { diff, Operation };
+export { diff };

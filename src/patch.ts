@@ -1,5 +1,5 @@
 import { _typeof, _clone, _objId, _decodePath } from './helpers';
-import { Operation } from './diff';
+import { Operation } from './types';
 
 function patch(data: any | any[], changes: Operation[]) {
   const conflicts = [];
@@ -21,7 +21,7 @@ function patch(data: any | any[], changes: Operation[]) {
       }
       const key = _key(c);
       if (key) {
-        head = head.find((i: any) => _objId(i) == key);
+        head = head.find((i: unknown) => _objId(i) == key);
       } else {
         head = head[c];
       }
@@ -29,7 +29,7 @@ function patch(data: any | any[], changes: Operation[]) {
 
     const key = _key(tip);
     if (key) {
-      const idx = head.findIndex(( i: any ) => _objId(i) == key);
+      const idx = head.findIndex(( i: unknown ) => _objId(i) == key);
       if (~idx) {
         tip = idx;
       } else {

@@ -38,11 +38,11 @@ function _isPrimitive(x: unknown) {
   return t === 'number' || t === 'null' || t === 'boolean' || t == 'string';
 }
 
-function _clone(x: any) {
+function _clone(x: unknown) {
   return JSON.parse(JSON.stringify(x));
 }
 
-function _entangled(a: unknown, b: unknown) {
+function _entangled(a: any, b: any) {
   if (_isPrimitive(a)) {
     return a === b;
   } else if (_typeof(a) == 'object') {
@@ -61,7 +61,7 @@ function _objId(x: any) {
   }
 }
 
-function _op(op: any, path: string, extra: any) {
+function _op(op: string, path: string, extra: unknown) {
   const operation = { op, path };
   Object.assign(operation, extra);
   return operation;
@@ -82,7 +82,7 @@ function _hsh(str: string) {
   return Math.abs(Array.from(str).reduce((p, _c, i, a) => (p << 5) - p + a.join(',').charCodeAt(i), 0))
 }
 
-function _crc(x: any) {
+function _crc(x: unknown) {
   return _hsh(_stable(x));
 }
 

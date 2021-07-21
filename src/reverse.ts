@@ -1,5 +1,5 @@
 import { _clone, _objId } from './helpers';
-import { Operation } from './diff';
+import { Operation } from './types';
 
 function reverse(changes: Operation[]) {
 

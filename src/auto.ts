@@ -3,21 +3,12 @@ import { diff } from './diff';
 import { patch } from './patch';
 import { reverse } from './reverse';
 import { _clone, _crc } from './helpers';
+import { Changes, tsFn } from './types'
 
 let HISTORY_LENGTH = 1000;
 
 const meta = new WeakMap();
 const _cid = _id();
-
-interface Changes {
-  diff: any[]
-  ts: number
-  cid: number
-  seq?: number
-  gid?: string
-}
-
-type tsFn = () => number
 
 class AutoPigeon {
 
@@ -29,14 +20,14 @@ class AutoPigeon {
     });
   }
 
-  static from(data: any, cid=_cid) {
+  static from(data: object, cid=_cid) {
     let doc = new AutoPigeon();
     meta.get(doc).cid = cid;
-    doc = AutoPigeon.change(doc, (doc: any) => Object.assign(doc, data));
+    doc = AutoPigeon.change(doc, (doc: AutoPigeon) => Object.assign(doc, data));
     return doc;
   }
 
-  static _forge(data: any, cid=_cid) {
+  static _forge(data: object, cid=_cid) {
     let doc = new AutoPigeon();
     meta.get(doc).cid = cid;
     Object.assign(doc, _clone(data));
@@ -48,13 +39,13 @@ class AutoPigeon {
     return AutoPigeon.from({});
   }
 
-  static clone(doc: any, historyLength=HISTORY_LENGTH) {
+  static clone(doc: object, historyLength=HISTORY_LENGTH) {
     const clone = AutoPigeon._forge(doc);
     meta.get(clone).history = meta.get(doc).history.slice(-historyLength);
     return clone;
   }
 
-  static getChanges(left: any, right: any) {
+  static getChanges(left: object, right: object) {
     const _diff = diff(left, right);
     const changes = {
       diff: _diff,
@@ -66,7 +57,7 @@ class AutoPigeon {
     return changes;
   }
 
-  static rewindChanges(doc: any, ts: number, cid: number) {
+  static rewindChanges(doc: object, ts: number, cid: number) {
 
     const { history } = meta.get(doc);
 
@@ -83,7 +74,7 @@ class AutoPigeon {
     }
   }
 
-  static fastForwardChanges(doc: any) {
+  static fastForwardChanges(doc: object) {
     const { stash, history } = meta.get(doc);
     let change;
     while (change = stash.pop()) {
@@ -92,7 +83,7 @@ class AutoPigeon {
     }
   }
 
-  static applyChanges(doc: any, changes: Changes) {
+  static applyChanges(doc: object, changes: Changes) {
     meta.get(doc).warning = null;
     const newDoc = AutoPigeon.clone(doc);
     try {
@@ -117,7 +108,7 @@ class AutoPigeon {
     return newDoc;
   }
 
-  static change(doc: any, fn: any) {
+  static change(doc: AutoPigeon, fn: (_: AutoPigeon) => AutoPigeon) {
 
     assert(doc instanceof AutoPigeon);
     assert(fn instanceof Function);
@@ -128,11 +119,11 @@ class AutoPigeon {
     return AutoPigeon.applyChanges(doc, changes);
   }
 
-  static getHistory(doc: any) {
+  static getHistory(doc: AutoPigeon) {
     return meta.get(doc).history;
   }
 
-  static merge(doc1: any, doc2: any) {
+  static merge(doc1: AutoPigeon, doc2: AutoPigeon) {
     let doc = AutoPigeon.from({});
     const history1 = AutoPigeon.getHistory(doc1);
     const history2 = AutoPigeon.getHistory(doc2);
@@ -169,7 +160,7 @@ class AutoPigeon {
     return doc;
   }
 
-  static getWarning(doc: any) {
+  static getWarning(doc: AutoPigeon) {
     return meta.get(doc).warning;
   }
 
@@ -185,7 +176,7 @@ class AutoPigeon {
     _ts = fn;
   }
 
-  static crc(doc: any) {
+  static crc(doc: AutoPigeon) {
     return _crc(doc);
   }
 
@@ -197,7 +188,7 @@ class AutoPigeon {
     return doc;
   }
 
-  static save(doc: any) {
+  static save(doc: AutoPigeon) {
     const { cid, ..._meta } = meta.get(doc);
     return JSON.stringify({
       meta: _meta,
