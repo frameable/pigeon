@@ -90,6 +90,7 @@ interface Operation {
   path: string
   value?: any
   _prev?: any
+  _index?: string
 }
 
 function diffObject(l: any, r: any, path='/'): Operation[] {

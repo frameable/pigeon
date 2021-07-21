@@ -1,2 +1,3 @@
-declare function reverse(changes: any[]): any;
+import { Operation } from './diff';
+declare function reverse(changes: Operation[]): Operation[];
 export { reverse };

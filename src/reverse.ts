@@ -1,8 +1,9 @@
 import { _clone, _objId } from './helpers';
+import { Operation } from './diff';
 
-function reverse(changes: any[]) {
+function reverse(changes: Operation[]) {
 
-  const reversed = _clone(changes).reverse();
+  const reversed = _clone(changes).reverse() as Operation[];
 
   for (const change of reversed) {
 
