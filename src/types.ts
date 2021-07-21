@@ -1,3 +1,4 @@
+import { AutoPigeon } from './auto';
 export type Primitive = null | boolean | string | number
 
 export interface Operation {
@@ -17,3 +18,5 @@ export interface Changes {
 }
 
 export type tsFn = () => number
+
+export type AutoDoc = InstanceType<typeof AutoPigeon>

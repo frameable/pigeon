@@ -3,7 +3,7 @@ import { diff } from './diff';
 import { patch } from './patch';
 import { reverse } from './reverse';
 import { _clone, _crc } from './helpers';
-import { Changes, tsFn } from './types'
+import { Changes, tsFn, AutoDoc } from './types'
 
 let HISTORY_LENGTH = 1000;
 
@@ -11,7 +11,6 @@ const meta = new WeakMap();
 const _cid = _id();
 
 class AutoPigeon {
-
   constructor() {
     meta.set(this, {
       history: [],
@@ -23,7 +22,7 @@ class AutoPigeon {
   static from(data: object, cid=_cid) {
     let doc = new AutoPigeon();
     meta.get(doc).cid = cid;
-    doc = AutoPigeon.change(doc, (doc: AutoPigeon) => Object.assign(doc, data));
+    doc = AutoPigeon.change(doc, (doc: AutoDoc) => Object.assign(doc, data));
     return doc;
   }
 
@@ -108,7 +107,7 @@ class AutoPigeon {
     return newDoc;
   }
 
-  static change(doc: AutoPigeon, fn: (_: AutoPigeon) => AutoPigeon) {
+  static change(doc: AutoDoc, fn: (_: AutoDoc) => AutoPigeon) {
 
     assert(doc instanceof AutoPigeon);
     assert(fn instanceof Function);
@@ -119,11 +118,11 @@ class AutoPigeon {
     return AutoPigeon.applyChanges(doc, changes);
   }
 
-  static getHistory(doc: AutoPigeon) {
+  static getHistory(doc: AutoDoc) {
     return meta.get(doc).history;
   }
 
-  static merge(doc1: AutoPigeon, doc2: AutoPigeon) {
+  static merge(doc1: AutoDoc, doc2: AutoDoc) {
     let doc = AutoPigeon.from({});
     const history1 = AutoPigeon.getHistory(doc1);
     const history2 = AutoPigeon.getHistory(doc2);
@@ -160,7 +159,7 @@ class AutoPigeon {
     return doc;
   }
 
-  static getWarning(doc: AutoPigeon) {
+  static getWarning(doc: AutoDoc) {
     return meta.get(doc).warning;
   }
 
@@ -176,7 +175,7 @@ class AutoPigeon {
     _ts = fn;
   }
 
-  static crc(doc: AutoPigeon) {
+  static crc(doc: AutoDoc) {
     return _crc(doc);
   }
 
@@ -188,7 +187,7 @@ class AutoPigeon {
     return doc;
   }
 
-  static save(doc: AutoPigeon) {
+  static save(doc: AutoDoc) {
     const { cid, ..._meta } = meta.get(doc);
     return JSON.stringify({
       meta: _meta,
