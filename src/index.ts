@@ -5,9 +5,12 @@ import { AutoPigeon } from './auto';
 
 const auto = AutoPigeon;
 
+type AutoDoc = typeof AutoPigeon;
+
 export {
   diff,
   patch,
   reverse,
   auto,
+  AutoDoc,
 };

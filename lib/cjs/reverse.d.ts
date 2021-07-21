@@ -1,3 +1,3 @@
-import { Operation } from './diff';
+import { Operation } from './types';
 declare function reverse(changes: Operation[]): Operation[];
 export { reverse };
