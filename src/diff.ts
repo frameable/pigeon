@@ -1,7 +1,7 @@
-const { _path, _typeof, _isPrimitive, _clone, _entangled, _objId, _op } = require('./helpers');
+import { _path, _typeof, _isPrimitive, _clone, _entangled, _objId, _op } from './helpers';
+import { Primitive, Operation } from './types';
 
-
-function diff(left, right) {
+function diff(left: any, right: any) {
 
   const type = _typeof(left);
 
@@ -21,7 +21,7 @@ function diff(left, right) {
 
 }
 
-function diffPrimitive(l, r, path='/') {
+function diffPrimitive(l: Primitive, r: Primitive, path='/') {
   if (l !== r) {
     return [_op('replace', _path(path), { value: r,  _prev: l, })];
   } else {
@@ -29,10 +29,9 @@ function diffPrimitive(l, r, path='/') {
   }
 }
 
-function diffArray(l, r, path='/') {
-
-  const lris = {};
-  const rlis = {};
+function diffArray(l: any[], r: any[], path='/') {
+  const lris: {[key: number]: number} = {};
+  const rlis: {[key: number]: number} = {};
 
   for (let i = 0; i < l.length; i++) {
     for (let j = 0; j < r.length; j++) {
@@ -87,8 +86,7 @@ function diffArray(l, r, path='/') {
   return ops;
 }
 
-
-function diffObject(l, r, path='/', ref) {
+function diffObject(l: any, r: any, path='/'): Operation[] {
 
   const ops = [];
 
@@ -104,13 +102,13 @@ function diffObject(l, r, path='/', ref) {
     const type = _typeof(l[k]);
 
     if (_isPrimitive(l[k])) {
-      ops.push(...diffPrimitive(l[k], r[k], _path(path, k), ref));
+      ops.push(...diffPrimitive(l[k], r[k], _path(path, k)));
     } else if (type !== _typeof(r[k])) {
       ops.push({ op: 'replace', path: _path(path, k), value: _clone(r[k]), _prev: _clone(l[k]) });
     } else if (type === 'array') {
       ops.push(...diffArray(l[k], r[k], _path(path, k)));
     } else if (type === 'object') {
-      ops.push(...diffObject(l[k], r[k], _path(path, k), ref));
+      ops.push(...diffObject(l[k], r[k], _path(path, k)));
     }
   }
 
@@ -126,5 +124,4 @@ function diffObject(l, r, path='/', ref) {
   return ops
 }
 
-
-module.exports = diff;
+export { diff };

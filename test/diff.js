@@ -1,8 +1,7 @@
 const assert = require('assert');
 const suite = require("./index");
 
-const diff = require('../diff');
-
+const { diff } = require('../lib/cjs/diff');
 
 suite('diff', test => {
 

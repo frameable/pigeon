@@ -1,6 +1,6 @@
 const suite = require('./index');
 const assert = require('assert');
-const patch = require('../patch');
+const { patch } = require('../lib/cjs/patch');
 
 suite('patch', async test => {
 

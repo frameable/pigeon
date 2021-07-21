@@ -1,16 +1,16 @@
-const { _typeof, _clone, _objId, _decodePath } = require('./helpers');
+import { _typeof, _clone, _objId, _decodePath } from './helpers';
+import { Operation } from './types';
 
-function patch(data, changes) {
-
+function patch(data: any | any[], changes: Operation[]) {
   const conflicts = [];
 
   CHANGE:
   for (const change of changes) {
 
     const components = _decodePath(change.path);
-
-    const root = components.shift();
-    let tip = components.pop();
+    // if (!components.length) continue CHANGE
+    components.shift();
+    let tip = components.pop() as string;
 
     let head = data;
 
@@ -21,7 +21,7 @@ function patch(data, changes) {
       }
       const key = _key(c);
       if (key) {
-        head = head.find(i => _objId(i) == key);
+        head = head.find((i: unknown) => _objId(i) == key);
       } else {
         head = head[c];
       }
@@ -29,7 +29,7 @@ function patch(data, changes) {
 
     const key = _key(tip);
     if (key) {
-      const idx = head.findIndex(i => _objId(i) == key);
+      const idx = head.findIndex(( i: unknown ) => _objId(i) == key);
       if (~idx) {
         tip = idx;
       } else {
@@ -59,9 +59,10 @@ function patch(data, changes) {
 }
 
 
-function _key(c) {
+function _key(c: string) {
   const m = c.match(/^\[(.+)\]$/);
   if (m) return m[1];
+  return null;
 }
 
-module.exports = patch;
+export { patch };

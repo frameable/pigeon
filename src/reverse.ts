@@ -1,8 +1,9 @@
-const { _clone, _objId } = require('./helpers');
+import { _clone, _objId } from './helpers';
+import { Operation } from './types';
 
-function reverse(changes) {
+function reverse(changes: Operation[]) {
 
-  const reversed = _clone(changes).reverse();
+  const reversed = _clone(changes).reverse() as Operation[];
 
   for (const change of reversed) {
 
@@ -44,4 +45,4 @@ function reverse(changes) {
 
 }
 
-module.exports = reverse;
+export { reverse };

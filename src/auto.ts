@@ -1,8 +1,9 @@
-const assert = require('assert');
-const diff = require('./diff');
-const patch = require('./patch');
-const reverse = require('./reverse');
-const { _clone, _crc } = require('./helpers');
+import assert from 'assert';
+import { diff } from './diff';
+import { patch } from './patch';
+import { reverse } from './reverse';
+import { _clone, _crc } from './helpers';
+import { Changes, tsFn, AutoDoc } from './types'
 
 let HISTORY_LENGTH = 1000;
 
@@ -10,7 +11,6 @@ const meta = new WeakMap();
 const _cid = _id();
 
 class AutoPigeon {
-
   constructor() {
     meta.set(this, {
       history: [],
@@ -19,18 +19,18 @@ class AutoPigeon {
     });
   }
 
-  static from(data, cid=_cid) {
+  static from(data: object, cid=_cid) {
     let doc = new AutoPigeon();
     meta.get(doc).cid = cid;
-    doc = AutoPigeon.change(doc, doc => Object.assign(doc, data));
+    doc = AutoPigeon.change(doc, (doc: AutoDoc) => Object.assign(doc, data));
     return doc;
   }
 
-  static _forge(data, cid=_cid) {
+  static _forge(data: object, cid=_cid) {
     let doc = new AutoPigeon();
     meta.get(doc).cid = cid;
     Object.assign(doc, _clone(data));
-    const changes = AutoPigeon.getChanges(doc, data);
+    // const changes = AutoPigeon.getChanges(doc, data);
     return doc;
   }
 
@@ -38,13 +38,13 @@ class AutoPigeon {
     return AutoPigeon.from({});
   }
 
-  static clone(doc, historyLength=HISTORY_LENGTH) {
+  static clone(doc: object, historyLength=HISTORY_LENGTH) {
     const clone = AutoPigeon._forge(doc);
     meta.get(clone).history = meta.get(doc).history.slice(-historyLength);
     return clone;
   }
 
-  static getChanges(left, right) {
+  static getChanges(left: object, right: object) {
     const _diff = diff(left, right);
     const changes = {
       diff: _diff,
@@ -56,7 +56,7 @@ class AutoPigeon {
     return changes;
   }
 
-  static rewindChanges(doc, ts, cid) {
+  static rewindChanges(doc: object, ts: number, cid: number) {
 
     const { history } = meta.get(doc);
 
@@ -73,7 +73,7 @@ class AutoPigeon {
     }
   }
 
-  static fastForwardChanges(doc) {
+  static fastForwardChanges(doc: object) {
     const { stash, history } = meta.get(doc);
     let change;
     while (change = stash.pop()) {
@@ -82,7 +82,7 @@ class AutoPigeon {
     }
   }
 
-  static applyChanges(doc, changes) {
+  static applyChanges(doc: object, changes: Changes) {
     meta.get(doc).warning = null;
     const newDoc = AutoPigeon.clone(doc);
     try {
@@ -107,7 +107,7 @@ class AutoPigeon {
     return newDoc;
   }
 
-  static change(doc, fn) {
+  static change(doc: AutoDoc, fn: (_: AutoDoc) => AutoPigeon) {
 
     assert(doc instanceof AutoPigeon);
     assert(fn instanceof Function);
@@ -118,11 +118,11 @@ class AutoPigeon {
     return AutoPigeon.applyChanges(doc, changes);
   }
 
-  static getHistory(doc) {
+  static getHistory(doc: AutoDoc) {
     return meta.get(doc).history;
   }
 
-  static merge(doc1, doc2) {
+  static merge(doc1: AutoDoc, doc2: AutoDoc) {
     let doc = AutoPigeon.from({});
     const history1 = AutoPigeon.getHistory(doc1);
     const history2 = AutoPigeon.getHistory(doc2);
@@ -159,27 +159,27 @@ class AutoPigeon {
     return doc;
   }
 
-  static getWarning(doc) {
+  static getWarning(doc: AutoDoc) {
     return meta.get(doc).warning;
   }
 
-  static getMissingDeps(doc) {
+  static getMissingDeps() {
     return false;
   }
 
-  static setHistoryLength(len) {
+  static setHistoryLength(len: number) {
     HISTORY_LENGTH = len;
   }
 
-  static setTimestamp(fn) {
+  static setTimestamp(fn: tsFn) {
     _ts = fn;
   }
 
-  static crc(doc) {
+  static crc(doc: AutoDoc) {
     return _crc(doc);
   }
 
-  static load(str, historyLength=HISTORY_LENGTH) {
+  static load(str: string, historyLength=HISTORY_LENGTH) {
     const { meta: _meta, data } = JSON.parse(str);
     _meta.history = _meta.history.slice(-historyLength);
     const doc = AutoPigeon.from(data);
@@ -187,7 +187,7 @@ class AutoPigeon {
     return doc;
   }
 
-  static save(doc) {
+  static save(doc: AutoDoc) {
     const { cid, ..._meta } = meta.get(doc);
     return JSON.stringify({
       meta: _meta,
@@ -200,7 +200,7 @@ function _id() {
   return Math.random().toString(36).substring(2);
 }
 
-function _ts() {
+let _ts = function() {
   return Date.now();
 }
 
@@ -209,4 +209,4 @@ function _seq() {
   return seq++;
 }
 
-module.exports = AutoPigeon;
+export { AutoPigeon }
