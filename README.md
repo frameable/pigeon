@@ -91,11 +91,11 @@ Serialize the document to be loaded later.
 
 Pigeon.auto keeps a near fully-compatible interface to Automerge, but the underlying implementation is optimized for a different use case, and makes different tradeoffs:
 
-- By default, history will grow only to 1000 items in length, after which oldest entries will be jettisoned as new entries arrive
-- Because of the above, performance is on par for smaller docs, and much improved for larger docs with more changes
+- By default, history will grow only to 1000 items in length, after which oldest entries will be jettisoned
+- Because of the above, performance is much improved for larger docs with more changes
 - Documents need not have a direct common ancestor for patches from one to apply to another
-- Changes are computed across entire data structures, without using proxies, so reassigning an equivalent object is a noop
+- Changes are computed across entire data structures, rather than tracing via proxies
 - Unix timestamps and client ids are used instead of vector clocks to ensure order and determinism
-- Since changesets use JSON-Patch paths, they are more easily introspectable and verifiable using existing tools
+- Since changesets use JSON-Patch paths, they are more easily introspectable using existing tools
 
 
