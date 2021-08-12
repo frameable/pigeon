@@ -30,7 +30,11 @@ assert.deepEqual(d1, d2);
 
 ### changes = diff(left, right)
 
-Compares data structures and returns changes required to make d1's content equal to d2's.  The format of the returned changes is based on [RFC 6902](https://tools.ietf.org/html/rfc6902), with the modification that path components which are array indexes, if they refer to an object, may take the form `[<id>]` where `<id>` is the value of a property meant to uniquely identify that object, with a property named `id` or `_id`.
+Compares data structures and returns changes required to make d1's content equal to d2's.  The format of the returned changes is based on [RFC 6902](https://tools.ietf.org/html/rfc6902), with the modification that path components which are array indexes, if they refer to an object, may take the form `[<id>]` where `<id>` is the value of a property meant to uniquely identify that object, with a property named `id` or `_id` or `uuid` or _uuid`.
+
+### ⚠️⚠️⚠️ Warning ⚠️⚠️⚠️
+
+As a consequence of the above, *all objects must have a unique identifier*. These can take the form of a property named `id` or `_id` or `uuid` or _uuid`.
 
 ### left = patch(left, changes)
 

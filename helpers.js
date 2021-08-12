@@ -54,7 +54,10 @@ function _entangled(a, b) {
 
 function _objId(x) {
   if (_typeof(x) == 'object') {
-    const id = x.id || x._id;
+    const id = x.id || x._id || x.uuid || x._uuid;
+    if (!id) {
+      throw new Error('Objects must have a unique identifier')
+    }
     return id;
   } else {
     return null;
@@ -97,4 +100,5 @@ module.exports = {
   _stable,
   _crc,
   _decodePath,
+  _encodePath,
 }
