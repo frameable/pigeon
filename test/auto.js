@@ -231,7 +231,7 @@ suite('auto', test => {
 
     let doc3 = AutoPigeon.applyChanges(doc1, c1);
 
-    assert(JSON.stringify(doc3.log) === JSON.stringify(changed));
+    assert.deepStrictEqual(doc3.log, changed);
   });
 
 });
