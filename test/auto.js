@@ -192,6 +192,48 @@ suite('auto', test => {
 
   });
 
+  test('objects in arrays without ids', async () => {
+    const initial = { foo: [
+        { a: 1 },
+        { a: 2 },
+        { a: 3 },
+      ]
+    }
+    const changed = [ { a: 1 }, { a: 3 } ];
+
+    let doc1 = AutoPigeon.from(initial);
+
+    assert.throws(() => AutoPigeon.change(doc1, doc => {
+      doc.foo = doc.foo.filter( item => item.id !== 2 );
+    }), Error)
+  });
+
+  test('more complicated objects in arrays', async () => {
+    const initial = { log: [
+        { uuid: 1, message: 'heyyy', type: '1' },
+        { uuid: 2, message: 'hello!', type: '1'},
+        { uuid: 3, message: 'good bye!', type: '1' },
+        { uuid: 4, message: 'hello!', type: '2' },
+      ]
+    }
+    const changed = [
+      { uuid: 1, message: 'heyyy', type: '1' },
+      { uuid: 3, message: 'good bye!', type: '1' },
+    ]
+
+    let doc1 = AutoPigeon.from(initial);
+
+    let doc2 = AutoPigeon.change(doc1, doc => {
+      doc.log = doc.log.filter( item => item.message !== 'hello!' );
+    })
+
+    let c1 = AutoPigeon.getChanges(doc1, doc2);
+
+    let doc3 = AutoPigeon.applyChanges(doc1, c1);
+
+    assert.deepStrictEqual(doc3.log, changed);
+  });
+
 });
 
 function _id() {
