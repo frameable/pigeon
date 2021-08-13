@@ -1,7 +1,9 @@
 const assert = require('assert');
 const suite = require("./index");
 
-const AutoPigeon = require('../auto');
+const Pigeon = require('../index');
+
+const AutoPigeon = Pigeon.auto;
 
 const sleep = ms => new Promise(done => setTimeout(done, ms));
 
@@ -208,30 +210,38 @@ suite('auto', test => {
     }), Error)
   });
 
+
   test('more complicated objects in arrays', async () => {
-    const initial = { log: [
-        { uuid: 1, message: 'heyyy', type: '1' },
-        { uuid: 2, message: 'hello!', type: '1'},
-        { uuid: 3, message: 'good bye!', type: '1' },
-        { uuid: 4, message: 'hello!', type: '2' },
+
+    Pigeon.id(x => x.uuid || x.id);
+
+    const initial = {
+      log: [
+        { uuid: 1, message: 'greetings', type: '1' },
+        { uuid: 2, message: 'hello', type: '1'},
+        { uuid: 3, message: 'good bye', type: '1' },
+        { uuid: 4, message: 'hello', type: '2' },
       ]
     }
+
     const changed = [
-      { uuid: 1, message: 'heyyy', type: '1' },
-      { uuid: 3, message: 'good bye!', type: '1' },
+      { uuid: 1, message: 'greetings', type: '1' },
+      { uuid: 3, message: 'good bye', type: '1' },
     ]
 
     let doc1 = AutoPigeon.from(initial);
 
     let doc2 = AutoPigeon.change(doc1, doc => {
-      doc.log = doc.log.filter( item => item.message !== 'hello!' );
+      doc.log = doc.log.filter(item => item.message !== 'hello');
     })
 
     let c1 = AutoPigeon.getChanges(doc1, doc2);
-
     let doc3 = AutoPigeon.applyChanges(doc1, c1);
 
-    assert(JSON.stringify(doc3.log) === JSON.stringify(changed));
+    assert.deepEqual(doc3.log, changed);
+
+    Pigeon.id(null);
+
   });
 
 });

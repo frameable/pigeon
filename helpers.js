@@ -53,12 +53,13 @@ function _entangled(a, b) {
 }
 
 function _objId(x) {
+  const Pigeon = require('./index');
+  if (Pigeon._objId) return Pigeon._objId(x);
   if (_typeof(x) == 'object') {
-    const id = x.id || x._id || x.uuid || x._uuid;
-    if (!id) {
+    if (!x.id) {
       throw new Error('Objects must have a unique identifier')
     }
-    return id;
+    return x.id;
   } else {
     return null;
   }
