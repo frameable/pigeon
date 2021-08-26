@@ -56,10 +56,11 @@ function _objId(x) {
   const Pigeon = require('./index');
   if (Pigeon._objId) return Pigeon._objId(x);
   if (_typeof(x) == 'object') {
-    if (!x.id) {
+    const id = x.id || x._id;
+    if (!id) {
       throw new Error('Objects must have a unique identifier')
     }
-    return x.id;
+    return id;
   } else {
     return null;
   }

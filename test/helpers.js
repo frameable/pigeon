@@ -17,6 +17,9 @@ suite('helpers', test => {
   test('_objId gets correct id', _ => {
     const a = { id: 'foo' };
     assert.strictEqual(_objId(a), 'foo')
+
+    const b = { _id: 'bar' };
+    assert.strictEqual(_objId(b), 'bar')
   });
 
   test('_objId throws when not given an id', _ => {
