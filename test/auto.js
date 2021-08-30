@@ -192,6 +192,26 @@ suite('auto', test => {
 
   });
 
+  test('idempotent changes', async() => {
+
+    let doc1 = AutoPigeon.from({ cards: [] });
+
+    doc2 = AutoPigeon.change(doc1, doc => {
+      doc.cards.push('A♤')
+    });
+
+    const changes = AutoPigeon.getChanges(doc1, doc2);
+
+    let docA = AutoPigeon.clone(doc1, 1000000, true);
+
+    docA = AutoPigeon.applyChanges(docA, changes);
+    assert.deepEqual(docA, { cards: ['A♤'] });
+
+    docA = AutoPigeon.applyChanges(docA, changes);
+    assert.deepEqual(docA, { cards: ['A♤'] });
+
+  });
+
 });
 
 function _id() {
