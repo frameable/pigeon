@@ -99,6 +99,14 @@ suite('auto', test => {
   test('load', async () => {
     const doc = AutoPigeon.load('{"meta": {"history": []}, "data": {"message": "salut!"}}');
     assert.equal(doc.message, 'salut!');
+    assert.ok(AutoPigeon.clone(doc))
+  });
+
+  test('roundtrip', async () => {
+    const doc = AutoPigeon.from({ message: 'salut!' });
+    const saved = AutoPigeon.save(doc);
+    const loaded = AutoPigeon.load(saved);
+    assert.ok(AutoPigeon.clone(loaded));
   });
 
   test('load truncated history', async () => {
@@ -193,7 +201,6 @@ suite('auto', test => {
   });
 
   test('idempotent changes', async() => {
-
     let doc1 = AutoPigeon.from({ cards: [] });
 
     doc2 = AutoPigeon.change(doc1, doc => {
@@ -209,7 +216,6 @@ suite('auto', test => {
 
     docA = AutoPigeon.applyChanges(docA, changes);
     assert.deepEqual(docA, { cards: ['A♤'] });
-
   });
 
 });

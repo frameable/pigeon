@@ -16,7 +16,7 @@ class AutoPigeon {
       history: [],
       stash: [],
       warning: null,
-      gids: new Set(),
+      gids: {},
     });
   }
 
@@ -42,7 +42,7 @@ class AutoPigeon {
   static clone(doc, historyLength=HISTORY_LENGTH) {
     const clone = AutoPigeon._forge(doc);
     meta.get(clone).history = meta.get(doc).history.slice(-historyLength);
-    meta.get(clone).gids = new Set(meta.get(doc).gids);
+    meta.get(clone).gids = _clone(meta.get(doc).gids);
     return clone;
   }
 
@@ -68,7 +68,7 @@ class AutoPigeon {
       if (change.ts > ts || (change.ts == ts && change.cid > cid)) {
         const c = meta.get(doc).history.pop();
         patch(doc, reverse(c.diff));
-        meta.get(doc).gids.delete(c.gid);
+        delete meta.get(doc).gids[c.gid];
         meta.get(doc).stash.push(c);
         continue;
       }
@@ -81,7 +81,7 @@ class AutoPigeon {
     let change;
     while (change = stash.pop()) {
       patch(doc, change.diff);
-      meta.get(doc).gids.add(change.gid);
+      meta.get(doc).gids[change.gid] = 1;
       history.push(change);
     }
   }
@@ -90,7 +90,7 @@ class AutoPigeon {
     meta.get(doc).warning = null;
     const newDoc = AutoPigeon.clone(doc);
     const history = meta.get(newDoc).history;
-    if (meta.get(doc).gids.has(changes.gid)) {
+    if (meta.get(doc).gids[changes.gid]) {
       return newDoc;
     }
     try {
@@ -100,7 +100,7 @@ class AutoPigeon {
     }
     try {
       patch(newDoc, changes.diff);
-      meta.get(newDoc).gids.add(changes.gid);
+      meta.get(newDoc).gids[changes.gid] = 1;
     } catch (e) {
       meta.get(newDoc).warning = 'patch failed: ' + e;
     }
