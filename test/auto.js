@@ -37,34 +37,74 @@ suite('auto', test => {
 
   });
 
+  test('two messages at the same time', async() => {
+    let doc1 = AutoPigeon.from({});
+    const source = {
+      name: '',
+      slug: '',
+      layout: 'lounge',
+      roomId: '8774785277024832',
+      tables: [],
+      onStage: {},
+      unmuted: {},
+      tableTime: 12,
+      seats: 5,
+      participants: {},
+      stageRequests: {},
+      enableAudienceTalking: true,
+      prerecordedvideo: [Object],
+      eventId: 'test-event-du9cjti9bbi',
+      invitedToStage: {},
+      flattenLogo: false,
+      maxStageParticipants: 500,
+      key: '/syncable/events/test-event-du9cjti9bbi/rooms/8774785277024832'
+    }
+    doc1 = AutoPigeon.change(doc1, doc => {
+      Object.assign(doc, source);
+    })
+    doc1 = AutoPigeon.change(doc1, doc => doc.layout = 'booth')
+    doc1 = AutoPigeon.change(doc1, doc => doc.name = 'photo booth')
+
+    assert(doc1.layout == 'booth');
+    assert(doc1.name == 'photo booth');
+    assert(doc1.seats == 5);
+
+  })
+
   test('out of order', async () => {
 
-    let doc1 = AutoPigeon.from({ count: 100 });
+    let doc1 = AutoPigeon.from({ count: 100, layout: 'lounge' });
 
     let doc2 = AutoPigeon.clone(doc1);
-    let doc3 = AutoPigeon.clone(doc1);
 
-    doc2 = AutoPigeon.change(doc2, doc => doc.count = 1000);
+    doc2 = AutoPigeon.change(doc2, doc => {
+      doc.layout = 'booth';
+    })
+
     let c1 = AutoPigeon.getChanges(doc1, doc2);
+    c1.ts = new Date() - 1000000;
+
+    doc1 = AutoPigeon.change(doc1, doc => {
+      doc.tables = [1, 2,3];
+      doc.count = 1011;
+      doc.layout = 'booth'
+    })
 
     await sleep(100);
 
-    doc3 = AutoPigeon.change(doc1, doc => doc.count += 1);
-    let c2 = AutoPigeon.getChanges(doc1, doc3);
-
-    doc1 = AutoPigeon.applyChanges(doc1, c2);
     doc1 = AutoPigeon.applyChanges(doc1, c1);
 
-    assert(doc1.count == 101);
+    console.log(JSON.stringify(doc1))
+    assert(doc1.layout == 'booth');
 
   });
 
   test('separate lineage', async () => {
     let doc1 = AutoPigeon.from({ count: 100 });
     let doc2 = AutoPigeon.from({ count: 100 });
-    doc3 = AutoPigeon.change(doc2, doc => doc.count = 1000);
+    let doc3 = AutoPigeon.change(doc2, doc => doc.count = 1000);
     let c1 = AutoPigeon.getChanges(doc2, doc3);
-    doc4 = AutoPigeon.applyChanges(doc1, c1);
+    let doc4 = AutoPigeon.applyChanges(doc1, c1);
     assert(doc4.count == 1000);
   });
 

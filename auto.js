@@ -61,7 +61,7 @@ class AutoPigeon {
     const { history } = meta.get(doc);
 
     while (true) {
-      if (!history.length) break;
+      if (history.length <= 1) break;
       const change = history[history.length - 1];
       if (change.ts > ts || (change.ts == ts && change.cid > cid)) {
         const c = meta.get(doc).history.pop();
@@ -102,7 +102,7 @@ class AutoPigeon {
     }
     const history = meta.get(newDoc).history;
     let idx = history.length;
-    while (idx > 0 && history[idx - 1].ts > changes.ts) idx--;
+    while (idx > 1 && history[idx - 1].ts > changes.ts) idx--;
     history.splice(idx, 0, changes);
     return newDoc;
   }
