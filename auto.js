@@ -89,7 +89,6 @@ class AutoPigeon {
   static applyChanges(doc, changes) {
     meta.get(doc).warning = null;
     const newDoc = AutoPigeon.clone(doc);
-    const history = meta.get(newDoc).history;
     if (meta.get(doc).gids[changes.gid]) {
       return newDoc;
     }
@@ -109,6 +108,7 @@ class AutoPigeon {
     } catch (e) {
       meta.get(newDoc).warning = 'forward failed: ' + e;
     }
+    const history = meta.get(newDoc).history;
     let idx = history.length;
     while (idx > 0 && history[idx - 1].ts > changes.ts) idx--;
     history.splice(idx, 0, changes);
