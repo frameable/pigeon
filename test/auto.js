@@ -203,19 +203,19 @@ suite('auto', test => {
   test('idempotent changes', async() => {
     let doc1 = AutoPigeon.from({ cards: [] });
 
-    doc2 = AutoPigeon.change(doc1, doc => {
+    let doc2 = AutoPigeon.change(doc1, doc => {
       doc.cards.push('A♤')
     });
 
     const changes = AutoPigeon.getChanges(doc1, doc2);
 
-    let docA = AutoPigeon.clone(doc1, 1000000, true);
+    let doc3 = AutoPigeon.clone(doc1);
 
-    docA = AutoPigeon.applyChanges(docA, changes);
-    assert.deepEqual(docA, { cards: ['A♤'] });
+    doc3 = AutoPigeon.applyChanges(doc3, changes);
+    assert.deepEqual(doc3, { cards: ['A♤'] });
 
-    docA = AutoPigeon.applyChanges(docA, changes);
-    assert.deepEqual(docA, { cards: ['A♤'] });
+    doc3 = AutoPigeon.applyChanges(doc3, changes);
+    assert.deepEqual(doc3, { cards: ['A♤'] });
   });
 
 });
