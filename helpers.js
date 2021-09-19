@@ -39,7 +39,22 @@ function _isPrimitive(x) {
 }
 
 function _clone(x) {
-  return JSON.parse(JSON.stringify(x));
+  const type = _typeof(x);
+  if (type == 'array') {
+    const arr = Array(x.length);
+    for (let i = 0; i < x.length; i++) {
+      arr[i] = _clone(x[i]);
+    }
+    return arr;
+  } else if (type == 'object') {
+    const obj = {};
+    for (const k in x) {
+      obj[k] = _clone(x[k]);
+    }
+    return obj;
+  } else {
+    return x
+  }
 }
 
 function _entangled(a, b) {
