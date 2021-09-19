@@ -92,14 +92,20 @@ function diffObject(l, r, path='/', ref) {
 
   const ops = [];
 
-  let keys = Object.keys(l);
-  let len = keys.length;
-  for (let i = 0; i < len; i++){
-    const k = keys[i];
+  const lkeys = Object.keys(l);
+  const llen = lkeys.length;
+  let removals = 0;
+
+  for (let i = 0; i < llen; i++){
+
+    const k = lkeys[i];
     if (!(r.hasOwnProperty(k))) {
+      removals++;
       ops.push({ op: 'remove', path: _path(path, k), _prev: _clone(l[k]) });
       continue;
     }
+
+    if (l[k] === r[k]) continue;
 
     const type = _typeof(l[k]);
 
@@ -114,12 +120,15 @@ function diffObject(l, r, path='/', ref) {
     }
   }
 
-  keys = Object.keys(r);
-  len = keys.length;
-  for (let i = 0; i < len; i++) {
-    const k = keys[i];
-    if (!(l.hasOwnProperty(k))) {
-      ops.push({ op: 'add', path: _path(path, k), value: _clone(r[k]) });
+  const rkeys = Object.keys(r);
+  const rlen = rkeys.length;
+
+  if (rlen > llen - removals) {
+    for (let i = 0; i < rlen; i++) {
+      const k = rkeys[i];
+      if (!(l.hasOwnProperty(k))) {
+        ops.push({ op: 'add', path: _path(path, k), value: _clone(r[k]) });
+      }
     }
   }
 
