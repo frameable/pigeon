@@ -47,13 +47,26 @@ function _clone(x) {
     }
     return arr;
   } else if (type == 'object') {
-    const obj = {};
-    for (const k in x) {
-      obj[k] = _clone(x[k]);
+    if (x.toJSON) {
+      return x.toJSON();
+    } else {
+      const obj = {};
+      for (const k in x) {
+        obj[k] = _clone(x[k]);
+      }
+      return obj;
     }
-    return obj;
-  } else {
-    return x
+  } else if (_isPrimitive(x)) {
+    const isNumber = typeof x == 'number';
+    if (isNumber) {
+      if (isFinite(x)) {
+        return x;
+      } else {
+        return null;
+      }
+    } else {
+      return x;
+    }
   }
 }
 
