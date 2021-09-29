@@ -54,7 +54,7 @@ function _entangled(a, b) {
 
 function _objId(x) {
   if (_typeof(x) == 'object') {
-    const id = x.id || x._id;
+    const id = x.id || x._id || x.uuid;
     return id;
   } else {
     return null;
