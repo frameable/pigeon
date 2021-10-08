@@ -122,6 +122,19 @@ suite('diff', test => {
     );
   })
 
+  test('object add and remove properties', async () => {
+    assert.deepEqual(
+      diff(
+        { name: 'tulsa', value: 920 },
+        { name: 'tulsa', population: 24012 }
+      ),
+      [
+        { op: 'remove', path: '/value', _prev: 920 },
+        { op: 'add', path: '/population', value: 24012 },
+      ]
+    );
+  })
+
   test('null to obj', async () => {
     assert.deepEqual(
       diff(

@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { _decodePath, _path } = require('../helpers');
+const { _decodePath, _path, _clone } = require('../helpers');
 
 const suite = require("./index");
 
@@ -12,6 +12,50 @@ suite('helpers', test => {
     const decodedPath = _decodePath(path);
 
     assert.deepEqual(decodedPath, ['', 'http://foo.bar']);
+  });
+
+  test('clone matches json parse/stringify', _ => {
+    const x = Symbol('abc');
+
+    const source = {
+      date: new Date(),
+      map: new Map(),
+      set: new Set(),
+      regex: new RegExp(/'hello'/),
+      arr: [1,2,3],
+      obj: {a: 1, b: 2},
+      null: null,
+      bool: false,
+      string: 'abc',
+      number: 1,
+      infinity: Infinity,
+      negativeInfinity: -Infinity,
+      nan: NaN,
+      [x]: '1',
+    }
+
+    const json = JSON.parse(JSON.stringify(source));
+    const cloned = _clone(source);
+
+    assert.deepEqual(json, cloned);
+
+    //JSON.stringify drops keys for class, function, and undefined values
+    //but we don't want to
+
+    const heterodoxSource = {
+      cls: class {},
+      fn: function() {},
+      undef: undefined,
+    };
+
+    const heterodoxCloned = _clone(heterodoxSource);
+
+    assert.deepEqual(heterodoxCloned, {
+      cls: undefined,
+      fn: undefined,
+      undef: undefined,
+    });
+
   });
 
 });

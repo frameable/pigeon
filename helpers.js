@@ -39,7 +39,35 @@ function _isPrimitive(x) {
 }
 
 function _clone(x) {
-  return JSON.parse(JSON.stringify(x));
+  const type = _typeof(x);
+  if (type == 'array') {
+    const arr = Array(x.length);
+    for (let i = 0; i < x.length; i++) {
+      arr[i] = _clone(x[i]);
+    }
+    return arr;
+  } else if (type == 'object') {
+    if (x.toJSON) {
+      return x.toJSON();
+    } else {
+      const obj = {};
+      for (const k in x) {
+        obj[k] = _clone(x[k]);
+      }
+      return obj;
+    }
+  } else if (_isPrimitive(x)) {
+    const isNumber = typeof x == 'number';
+    if (isNumber) {
+      if (isFinite(x)) {
+        return x;
+      } else {
+        return null;
+      }
+    } else {
+      return x;
+    }
+  }
 }
 
 function _entangled(a, b) {
