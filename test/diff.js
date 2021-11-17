@@ -155,15 +155,84 @@ suite('diff', test => {
     );
   })
 
+  test('nested array diff returns', async () => {
+    assert.doesNotThrow(
+      diff(
+        {
+          "roomId": "6694036202578270",
+          "tables": [
+            {
+              "id": "5685966535045196",
+              "participantIds": {
+                "4818723833731450": true,
+                "8482600846703780": true
+              },
+              "evictionTime": {
+                "4528704448296070": 1637099055996.7285,
+                "4818723833731450": 1637124962152.836,
+                "8482600846703780": 1637125281084.5051
+              },
+              "topic": "Where would you most like to travel?",
+              "details": {},
+              "topicBy": null,
+              "promptBy": null,
+              "currentTopic": "",
+              "currentPrompt": "",
+              "showGame": "anagrams",
+              "unplayedCustomWords": [
+                "nasty",
+                "plod",
+                "trod"
+              ],
+              "customWordsInitialized": false,
+              "customWordsLeft": [
+                "trod",
+                "nasty",
+                "plod"
+              ],
+              "customWordPlayOver": false
+            }
+          ],
+        },
+
+        {
+          "roomId": "6694036202578270",
+          "tables": [
+            {
+              "id": "5685966535045196",
+              "participantIds": {
+                "4818723833731450": true,
+                "8482600846703780": true
+              },
+              "evictionTime": {
+                "4528704448296070": 1637099055996.7285,
+                "4818723833731450": 1637124962152.836,
+                "8482600846703780": 1637125281084.5051
+              },
+              "topic": "Where would you most like to travel?",
+              "details": {},
+              "topicBy": null,
+              "promptBy": null,
+              "currentTopic": "",
+              "currentPrompt": "",
+              "showGame": "anagrams",
+              "unplayedCustomWords": [
+                "plod",
+                "trod",
+                "nasty"
+              ],
+              "customWordsInitialized": true,
+              "customWordsLeft": [
+                "trod",
+                "nasty",
+                "plod"
+              ],
+              "customWordPlayOver": false
+            }
+          ],
+        }
+      ),
+    );
+  })
 });
-
-
-
-
-
-
-
-
-
-
 
