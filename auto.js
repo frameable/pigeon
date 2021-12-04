@@ -31,7 +31,6 @@ class AutoPigeon {
     let doc = new AutoPigeon();
     meta.get(doc).cid = cid;
     Object.assign(doc, _clone(data));
-    const changes = AutoPigeon.getChanges(doc, data);
     return doc;
   }
 
