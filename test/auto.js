@@ -243,6 +243,23 @@ suite('auto', test => {
     assert.deepEqual(doc3, { cards: ['A♤'] });
   });
 
+  test('apply in place', async() => {
+    let doc1 = AutoPigeon.from({ cards: [] });
+
+    let doc2 = AutoPigeon.change(doc1, doc => {
+      doc.cards.push('A♤')
+    });
+
+    const changes = AutoPigeon.getChanges(doc1, doc2);
+
+    let doc3 = AutoPigeon.applyChanges(doc1, changes);
+    assert.deepEqual(doc3, { cards: ['A♤'] });
+    assert.deepEqual(doc1, { cards: [] });
+
+    AutoPigeon.applyChangesInPlace(doc1, changes);
+    assert.deepEqual(doc1, { cards: ['A♤'] });
+  });
+
 });
 
 function _id() {
