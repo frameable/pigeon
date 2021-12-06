@@ -85,9 +85,13 @@ class AutoPigeon {
     }
   }
 
-  static applyChanges(doc, changes) {
+  static applyChangesInPlace(doc, changes) {
+    return AutoPigeon.applyChanges(doc, changes, true);
+  }
+
+  static applyChanges(doc, changes, inplace) {
     meta.get(doc).warning = null;
-    const newDoc = AutoPigeon.clone(doc);
+    const newDoc = inplace ? doc : AutoPigeon.clone(doc);
     if (meta.get(doc).gids[changes.gid]) {
       return newDoc;
     }
