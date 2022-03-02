@@ -54,6 +54,30 @@ suite('patch', async test => {
     );
   });
 
+  test('array move item', async () => {
+    assert.deepEqual(
+      patch(
+        [ { id: 'def' }, { id: 'abc' }, { id: 'ghi' } ],
+        [
+          { from: '/[abc]', op: 'move', path: '/0' },
+          { from: '/[def]', op: 'move', path: '/1' }
+        ]
+      ),
+      [ { id: 'abc' }, { id: 'def' }, { id: 'ghi' } ]
+    )
+  });
+
+  test('array move item literal', async () => {
+    assert.deepEqual(
+      patch(
+        [ 'def', 'abc', 'ghi' ],
+        [
+          { from: '/1', op: 'move', path: '/0' },
+        ]
+      ),
+      [ 'abc', 'def', 'ghi' ]
+    )
+  });
 });
 
 
