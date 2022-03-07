@@ -98,17 +98,20 @@ class AutoPigeon {
     try {
       AutoPigeon.rewindChanges(newDoc, changes.ts, changes.cid);
     } catch (e) {
+      console.warn("pigeon rewind failed", e, doc, changes);
       meta.get(newDoc).warning = 'rewind failed: ' + e;
     }
     try {
       patch(newDoc, changes.diff);
       meta.get(newDoc).gids[changes.gid] = 1;
     } catch (e) {
+      console.warn("pigeon patch failed", e, doc, changes);
       meta.get(newDoc).warning = 'patch failed: ' + e;
     }
     try {
       AutoPigeon.fastForwardChanges(newDoc);
     } catch (e) {
+      console.warn("pigeon fastforward failed", e, doc, changes);
       meta.get(newDoc).warning = 'forward failed: ' + e;
     }
     const history = meta.get(newDoc).history;
