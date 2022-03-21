@@ -260,6 +260,23 @@ suite('auto', test => {
     assert.deepEqual(doc1, { cards: ['A♤'] });
   });
 
+  test('alias', async() => {
+    let doc1 = AutoPigeon.from({ cards: [] });
+    let doc2 = AutoPigeon.alias(doc1);
+
+    assert(doc1 !== doc2);
+
+    let tmp = AutoPigeon.change(doc1, doc => {
+      doc.cards.push('A♤')
+    });
+
+    const changes = AutoPigeon.getChanges(doc1, tmp);
+    AutoPigeon.applyChangesInPlace(doc1, changes);
+
+    assert.deepEqual(doc1, { cards: ['A♤'] });
+    assert.deepEqual(doc2, { cards: ['A♤'] });
+  });
+
 });
 
 function _id() {
