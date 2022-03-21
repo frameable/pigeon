@@ -47,9 +47,21 @@ class AutoPigeon {
 
   static clone(doc, historyLength=HISTORY_LENGTH) {
     const clone = AutoPigeon._forge(doc);
+    AutoPigeon.pruneHistory(meta.get(doc), historyLength)
     meta.get(clone).history = meta.get(doc).history.slice(-historyLength);
     meta.get(clone).gids = _clone(meta.get(doc).gids);
     return clone;
+  }
+
+  static pruneHistory(meta, historyLength) {
+    const currHistoryLength = meta.history.length;
+    if (currHistoryLength > historyLength) {
+      const prunedHistory = meta.history.slice(0,currHistoryLength - historyLength);
+      const gids = meta.gids;
+      for (const item of prunedHistory) {
+        delete gids[item.gid];
+      }
+    }
   }
 
   static getChanges(left, right) {
@@ -199,6 +211,7 @@ class AutoPigeon {
 
   static load(str, historyLength=HISTORY_LENGTH) {
     const { meta: _meta, data } = JSON.parse(str);
+    AutoPigeon.pruneHistory(_meta, historyLength);
     _meta.history = _meta.history.slice(-historyLength);
     const doc = AutoPigeon.from(data);
     Object.assign(meta.get(doc), _meta);

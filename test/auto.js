@@ -137,9 +137,40 @@ suite('auto', test => {
   test('load truncated history', async () => {
 
     let doc = _counter();
+    const beforeDoc = JSON.parse(AutoPigeon.save(doc));
+
+    assert.equal(beforeDoc.meta.history.length,101,'history length is 101');
+    assert.equal(Object.keys(beforeDoc.meta.gids).length, 101,'gids length is 101')
+
     doc = AutoPigeon.clone(doc, 10);
 
+    const afterDoc = JSON.parse(AutoPigeon.save(doc));
+    assert.equal(afterDoc.meta.history.length, 10,'history length was truncated')
+    assert.equal(Object.keys(afterDoc.meta.gids).length, 10,'gids length was truncated')
+
     const [ { diff } ] = AutoPigeon.getHistory(doc).slice(-1);
+
+    // verify that all items in history have a gid in the gids obj
+    let hasMissingGid = false;
+    for (const item of afterDoc.meta.history) {
+      if (!afterDoc.meta.gids[item.gid]) {
+        hasMissingGid = true;
+      }
+    }
+    assert.equal(hasMissingGid,false,'all items in history have a gid in the gids object');
+
+    // verify that all gids have an associated history item
+    let hasMissingHistoryItem = false;
+    for (const gid of Object.keys(afterDoc.meta.gids)) {
+      const historyItem = afterDoc.meta.history.find(h => h.gid == gid);
+      if (!historyItem) {
+        hasMissingHistoryItem = true;
+      }
+    }
+
+    assert.equal(hasMissingHistoryItem,false,'all gids have an associated history item');
+
+
     assert.deepEqual(diff, [{"op":"replace","path":"/count","value":100,"_prev":99}]);
 
     assert.equal(doc.count, 100);
