@@ -1,6 +1,6 @@
 {
   "name": "pigeon",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "description": "Semantic diff and patch for JSON suitable for CRDT",
   "main": "index.js",
   "directories": {
