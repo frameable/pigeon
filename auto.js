@@ -34,6 +34,13 @@ class AutoPigeon {
     return doc;
   }
 
+  static alias(doc) {
+    let alias = new AutoPigeon();
+    meta.set(alias, meta.get(doc));
+    Object.assign(alias, doc);
+    return alias;
+  }
+
   static init() {
     return AutoPigeon.from({});
   }
