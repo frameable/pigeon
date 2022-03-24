@@ -49,10 +49,6 @@ Create a document from an array or object.
 
 Clone a document.
 
-#### aliasDoc = auto.alias(doc)
-
-Make an alias to an existing doc; analogous to a hardlink.
-
 #### changes = auto.getChanges(left, right)
 
 Get the set of changes that would transform `left` into `right`.

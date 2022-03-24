@@ -34,10 +34,10 @@ class AutoPigeon {
     return doc;
   }
 
-  static alias(doc) {
+  static _alias(doc) {
     let alias = new AutoPigeon();
     meta.set(alias, meta.get(doc));
-    Object.assign(alias, doc);
+    Object.assign(alias, _clone(doc));
     return alias;
   }
 
