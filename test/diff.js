@@ -155,15 +155,31 @@ suite('diff', test => {
     );
   })
 
+  test('array order shuffle', async () => {
+    assert.deepEqual(
+      diff(
+        [ { id: 'def' }, { id: 'abc' }, { id: 'ghi' } ],
+        [ { id: 'abc' }, { id: 'def' }, { id: 'ghi' } ],
+      ),
+      [
+        { from: '/[abc]', op: 'move', path: '/0' },
+        { from: '/[def]', op: 'move', path: '/1' }
+      ]
+    );
+  })
+
+  test('array order shuffle literals', async () => {
+    assert.deepEqual(
+      diff(
+        [ 'def', 'abc', 'ghi' ],
+        [ 'abc', 'def', 'ghi' ],
+      ),
+      [
+        { from: '/1', op: 'move', path: '/0' },
+        { from: '/0', op: 'move', path: '/1' } // TODO: fix this bogus second change
+      ]
+    );
+  })
+
 });
-
-
-
-
-
-
-
-
-
-
 

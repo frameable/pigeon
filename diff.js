@@ -75,10 +75,11 @@ function diffArray(l, r, path='/') {
     }
 
     if (j < r.length && j in rlis) {
-      ops.push({ op: 'move', from: _path(path, rlis[j], l[rlis[j]]), path: _path(j) });
+      ops.push({ op: 'move', from: _path(path, rlis[j], l[rlis[j]]), path: _path(path, j) });
       if (_typeof(rlis[j]) == 'object') {
         ops.push(...diffObject(l[rlis[j]], r[j], path));
       }
+      if (i <= j) i++;
       j++;
       continue;
     }
