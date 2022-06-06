@@ -26,6 +26,11 @@ patch(d1, changes)
 assert.deepEqual(d1, d2);
 ```
 
+## Identifier properties
+
+In order to preserve semantic integrity, any objects which are items in arrays should contain identifier properties named `id`, `_id`, or `uuid`, as in the example above.  When objects have identifier properties, change sets will be keyed by those identifiers, and all will be well.  If they don't have identifiers however, changes will be keyed by array indexes as a best effort only, and so property changes may or may not be robust to changes in array item order.
+
+
 ## API
 
 ### changes = diff(left, right)

@@ -274,6 +274,32 @@ suite('auto', test => {
     assert.deepEqual(doc3, { cards: ['A♤'] });
   });
 
+  test('funky order changes', async() => {
+    let doc1 = AutoPigeon.from({
+      cities: [
+        { name: "Chicago", population: '3023429', transport: 'K' },
+        { name: "Boston", population: '452329', transport: 'T' },
+      ]
+    });
+
+    let doc2 = AutoPigeon.change(doc1, doc => {
+      doc.cities[1].transport = 'L';
+    });
+
+    const c2 = AutoPigeon.getChanges(doc1, doc2);
+
+    let doc3 = AutoPigeon.change(doc1, doc => {
+      doc.cities = [
+        doc.cities[1],
+        doc.cities[0],
+      ]
+    });
+
+    const c3 = AutoPigeon.getChanges(doc1, doc3);
+    assert(c3.diff.length, 6);
+
+  });
+
   test('apply in place', async() => {
     let doc1 = AutoPigeon.from({ cards: [] });
 
