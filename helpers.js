@@ -1,3 +1,12 @@
+let _config = {
+  strict: true,
+  getObjectId: x => x.id || x._id || x.uuid || x.slug,
+};
+
+function _configure(options) {
+  Object.assign(_config, options);
+}
+
 function _path(path, k, o) {
   if (o) {
     const id = _objId(o);
@@ -82,8 +91,11 @@ function _entangled(a, b) {
 
 function _objId(x) {
   if (_typeof(x) == 'object') {
-    const id = x.id || x._id || x.uuid;
-    return id;
+    const id = _config.getObjectId(x);
+    if (id != undefined) return id;
+    if (_config.strict) {
+      throw new Error("couldn't find id for object", { cause: x });
+    }
   } else {
     return null;
   }
@@ -125,4 +137,6 @@ module.exports = {
   _stable,
   _crc,
   _decodePath,
+  _config,
+  _configure,
 }

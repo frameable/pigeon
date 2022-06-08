@@ -2,6 +2,7 @@ const assert = require('assert');
 const suite = require("./index");
 
 const AutoPigeon = require('../auto');
+const { _configure } = require('../helpers');
 
 const sleep = ms => new Promise(done => setTimeout(done, ms));
 
@@ -215,7 +216,6 @@ suite('auto', test => {
         { id: 2, title: 'do quality assurance' },
       ]
     });
-
   });
 
   test('automerge merge example', async () => {
@@ -274,11 +274,11 @@ suite('auto', test => {
     assert.deepEqual(doc3, { cards: ['A♤'] });
   });
 
-  test('funky order changes', async() => {
+  test('order changes with ids', async() => {
     let doc1 = AutoPigeon.from({
       cities: [
-        { name: "Chicago", population: '3023429', transport: 'K' },
-        { name: "Boston", population: '452329', transport: 'T' },
+        { id: 'bos', name: "Boston", population: '452329', transport: 'T' },
+        { id: 'chi', name: "Chicago", population: '3023429', transport: 'K' },
       ]
     });
 
@@ -287,6 +287,38 @@ suite('auto', test => {
     });
 
     const c2 = AutoPigeon.getChanges(doc1, doc2);
+    assert(c2.diff.length, 1);
+
+    let doc3 = AutoPigeon.change(doc1, doc => {
+      doc.cities = [
+        doc.cities[1],
+        doc.cities[0],
+      ]
+    });
+
+    const c3 = AutoPigeon.getChanges(doc1, doc3);
+    assert(c3.diff.every(o => o.op == 'move'));
+    assert(c3.diff.length == 2);
+
+  });
+
+  test('order changes without ids is messy', async() => {
+
+    AutoPigeon.configure({ strict: false });
+
+    let doc1 = AutoPigeon.from({
+      cities: [
+        { name: "Boston", population: '452329', transport: 'T' },
+        { name: "Chicago", population: '3023429', transport: 'K' },
+      ]
+    });
+
+    let doc2 = AutoPigeon.change(doc1, doc => {
+      doc.cities[1].transport = 'L';
+    });
+
+    const c2 = AutoPigeon.getChanges(doc1, doc2);
+    assert(c2.diff.length, 1);
 
     let doc3 = AutoPigeon.change(doc1, doc => {
       doc.cities = [
@@ -297,6 +329,8 @@ suite('auto', test => {
 
     const c3 = AutoPigeon.getChanges(doc1, doc3);
     assert(c3.diff.length, 6);
+
+    AutoPigeon.configure({ strict: true });
 
   });
 

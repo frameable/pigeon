@@ -3,9 +3,8 @@ const patch = require('./patch');
 const reverse = require('./reverse');
 const auto = require('./auto');
 
-module.exports = {
-  diff,
-  patch,
-  reverse,
-  auto,
-};
+function configure(options) {
+  helpers._configure(options);
+}
+
+module.exports = Object.assign(auto, { auto, diff, patch, reverse });

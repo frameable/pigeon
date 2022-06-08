@@ -2,7 +2,7 @@ const assert = require('assert');
 const diff = require('./diff');
 const patch = require('./patch');
 const reverse = require('./reverse');
-const { _clone, _crc } = require('./helpers');
+const { _clone, _crc, _configure } = require('./helpers');
 
 let HISTORY_LENGTH = 1000;
 
@@ -223,6 +223,10 @@ class AutoPigeon {
       meta: _meta,
       data: doc,
     });
+  }
+
+  static configure(options) {
+    _configure(options);
   }
 }
 

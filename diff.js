@@ -1,4 +1,4 @@
-const { _path, _typeof, _isPrimitive, _clone, _entangled, _objId, _op } = require('./helpers');
+const { _path, _typeof, _isPrimitive, _clone, _entangled, _objId, _op, _config } = require('./helpers');
 
 
 function diff(left, right) {
@@ -39,7 +39,7 @@ function diffArray(l, r, path='/') {
       if (j in rlis) continue;
       if (i in lris) continue;
       if (
-        (_typeof(l[i]) == 'array' && _typeof(r[j]) == 'array' && i == j) ||
+        (!_config.strict && _typeof(l[i]) == 'array' && _typeof(r[j]) == 'array' && i == j) ||
         _entangled(l[i], r[j])
       ) {
         lris[i] = j;
