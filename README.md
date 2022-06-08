@@ -108,6 +108,7 @@ Set configuration options.
 Pigeon.configure({
   strict: true,
   getObjectId: x => x.id || x._id || x.uuid || x.slug,
+  getTimestamp: Date.now,
 })
 ```
 
