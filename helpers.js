@@ -1,6 +1,7 @@
 let _config = {
   strict: true,
   getObjectId: x => x.id || x._id || x.uuid || x.slug,
+  getTimestamp: Date.now,
 };
 
 function _configure(options) {

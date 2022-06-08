@@ -2,7 +2,7 @@ const assert = require('assert');
 const diff = require('./diff');
 const patch = require('./patch');
 const reverse = require('./reverse');
-const { _clone, _crc, _configure } = require('./helpers');
+const { _clone, _crc, _configure, _config } = require('./helpers');
 
 let HISTORY_LENGTH = 1000;
 
@@ -69,7 +69,7 @@ class AutoPigeon {
     const changes = {
       diff: _diff,
       cid: meta.get(left).cid,
-      ts: _ts(),
+      ts: _config.getTimestamp(),
       seq: _seq(),
       gid: _id(),
     }
@@ -202,7 +202,7 @@ class AutoPigeon {
   }
 
   static setTimestamp(fn) {
-    _ts = fn;
+    _config.getTimestamp = fn;
   }
 
   static crc(doc) {
@@ -232,10 +232,6 @@ class AutoPigeon {
 
 function _id() {
   return Math.random().toString(36).substring(2);
-}
-
-function _ts() {
-  return Date.now();
 }
 
 let seq = 0;

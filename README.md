@@ -119,6 +119,19 @@ In order to preserve semantic integrity, any objects which are items in arrays s
 
 Callback to return an identifier value, given an object.  By default object identifiers will be sought as shown above, but if your data uses different properties for unique identifiers, you may supply an alternate function for retrieving them.
 
+##### `getTimestamp`
+
+Callback to return a unix timestamp.  This defaults to `Date.now`, which may be good enough in many cases.  If the client's clock is set by `ntpd` for example, all will be probably well enough.  However, for more precise ordering of operations, you may wish to provide your own function which would periodically sync the server time to the client and take network latency into account to provide a more accurate timestamp.
+
+
+## More on timestamps
+
+Regardless of the accuracy of clients' clocks, clients will always end up with the same state as each other, given the same documents and changes to be applied, even if the changes arrive out of order.
+
+Each time a client changes a document, internally, the change gets decorated with a client timestamp. When we merge documents, or apply change sets, the document is rewound to just before the earliest change to be applied, and changes are played forward in order.
+
+So, for example, if one client's clock is a few seconds slower than another, if both clients change a value at about the same time, when the changes get merged, the first client's timestamp will be later, and so both clients will apply the first client's change last, and both clients will end up with exactly the same state.
+
 
 
 ## Operating directly on JSON objects
