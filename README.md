@@ -3,8 +3,9 @@
 Diff, patch, merge, and synchronize JSON documents with an [Automerge](https://github.com/automerge/automerge)-compatible interface
 
 ```javascript
-import Pigeon from 'pigeon';
+const Pigeon = require('pigeon')
 
+// initialize our document from an object literal
 let doc1 = Pigeon.from({
   cards: [
     { id: 1, title: 'Rewrite everything in Clojure', done: false },
@@ -12,6 +13,7 @@ let doc1 = Pigeon.from({
   ]
 })
 
+// make a clone of our document
 let doc2 = Pigeon.from(doc1);
 
 // one user deletes the clojure card
@@ -42,6 +44,7 @@ Pigeon keeps a near fully-compatible interface to Automerge, but the underlying 
 - Unix timestamps and client ids are used instead of vector clocks to ensure order and determinism
 - Since changesets use JSON-Patch paths, they are more easily introspectable using existing tools
 - Objects should have unique identifiers in order to preserve semantic integrity
+- Changes may be made in-place for situations where performance is critical
 
 #### newDoc = Pigeon.from(data, cid=_cid)
 
@@ -69,7 +72,11 @@ Roll forward the document state up to the head.
 
 #### newDoc = Pigeon.applyChanges(doc, changes)
 
-Roll forward the document state up to the head, possibly after applying previous changes.
+Clone the given document to a new document and apply changes to the new document.
+
+#### Pigeon.applyChangesInPlace(doc, changes)
+
+Apply given changes to the document in-place.
 
 #### newDoc = Pigeon.change(doc, fn)
 
@@ -97,7 +104,7 @@ Serialize the document to be loaded later.
 
 Set configuration options.  Defaults are as follows...
 
-```
+```javascript
 auto.configure({
   strict: true,
   getObjectId: x => x.id || x._id || x.uuid || x.slug,
@@ -113,29 +120,32 @@ In order to preserve semantic integrity, any objects which are items in arrays s
 Callback to return an identifier value, given an object.  By default object identifiers will be sought as shown above, but if your data uses different properties for unique identifiers, you may supply an alternate function for retrieving them.
 
 
-## Diff and patch
+## Operating directly on JSON objects
+
+Pigeon also exposes methods to diff and patch JSON objects:
 
 ```javascript
 const { diff, patch } = require('pigeon');
 
-const d1 = [
+const a1 = [
   { id: 3920, name: 'Chicago', population: 5239412 },
   { id: 3977, name: 'Boston', population: 1032943 },
 ]
 
-const d2 = [
+const a2 = [
   { id: 3920, name: 'Chicago', population: 5239412 },
   { id: 3977, name: 'Boston', population: 1032997 },
 ]
 
-const changes = diff(d1, d2);
-// [
-//   { op: 'replace', path: '/[3977]/population', value: 1032997, _prev: 1032943 }
-// ]
+const [ changes ] = diff(a1, a2);
 
-patch(d1, changes)
+assert.deepEqual(
+  changes,
+  { op: 'replace', path: '/[3977]/population', value: 1032997, _prev: 1032943 },
+);
 
-assert.deepEqual(d1, d2);
+patch(a1, changes)
+assert.deepEqual(a1, a2);
 
 ```
 
