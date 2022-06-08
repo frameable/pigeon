@@ -14,35 +14,35 @@ let doc1 = Pigeon.from({
 })
 
 // make a clone of our document
-let doc2 = Pigeon.from(doc1);
+let doc2 = Pigeon.from(doc1)
 
 // one user deletes the clojure card
-doc1 = Pigeon.change(doc1, doc => doc.cards.splice(0, 1));
+doc1 = Pigeon.change(doc1, doc => doc.cards.splice(0, 1))
 
 // meanwhile another user sets the haskell card to done
-doc2 = Pigeon.change(doc1, doc => doc.cards[1].done = true);
+doc2 = Pigeon.change(doc2, doc => doc.cards[1].done = true)
 
 // we merge the documents together in any order
-const merged = Pigeon.merge(doc1, doc2);
+const merged = Pigeon.merge(doc1, doc2)
 
 // all is well with updates merged together
 assert.deepEqual(merged, {
   cards: [
     { id: 2, title: 'Rewrite everything in Haskell', done: true },
   ]
-});
+})
 ```
 
 ### Differences from Automerge
 
-Pigeon keeps a near fully-compatible interface to Automerge, but the underlying implementation is optimized for a different use case, and makes different tradeoffs:
+Pigeon keeps a near fully-compatible interface to Automerge, but the underlying implementation is optimized for a different use case, and makes different trade-offs:
 
 - By default, history will grow only to 1000 items in length, after which oldest entries will be jettisoned
 - Because of the above, performance is much improved for larger docs with more changes
-- Documents need not have a direct common ancestor for patches from one to apply to another
 - Changes are computed across entire data structures, rather than tracing via proxies
+- Documents need not have a direct common ancestor for patches from one to apply to another
 - Unix timestamps and client ids are used instead of vector clocks to ensure order and determinism
-- Since changesets use JSON-Patch paths, they are more easily introspectable using existing tools
+- Change sets use [JSON-Patch](https://tools.ietf.org/html/rfc6902)-esque paths, and so are more easily introspectable using existing tools
 - Objects should have unique identifiers in order to preserve semantic integrity
 - Changes may be made in-place for situations where performance is critical
 
@@ -83,9 +83,9 @@ Apply given changes to the document in-place.
 Change the document according to the given function, which receivs the document as a parameter.
 
 ```javascript
-doc = auto.from({ message: 'hello' });
-newDoc = auto.change(doc, d => d.message = 'hey there');
-changes = auto.getChanges(doc, newDoc);
+doc = Pigeon.from({ message: 'hello' })
+newDoc = Pigeon.change(doc, d => d.message = 'hey there')
+changes = Pigeon.getChanges(doc, newDoc)
 ```
 
 #### changes = Pigeon.getHistory(doc)
@@ -105,10 +105,10 @@ Serialize the document to be loaded later.
 Set configuration options.  Defaults are as follows...
 
 ```javascript
-auto.configure({
+Pigeon.configure({
   strict: true,
   getObjectId: x => x.id || x._id || x.uuid || x.slug,
-});
+})
 ```
 
 ##### `strict`
@@ -125,7 +125,7 @@ Callback to return an identifier value, given an object.  By default object iden
 Pigeon also exposes methods to diff and patch JSON objects:
 
 ```javascript
-const { diff, patch } = require('pigeon');
+const { diff, patch } = require('pigeon')
 
 const a1 = [
   { id: 3920, name: 'Chicago', population: 5239412 },
@@ -142,11 +142,10 @@ const [ changes ] = diff(a1, a2);
 assert.deepEqual(
   changes,
   { op: 'replace', path: '/[3977]/population', value: 1032997, _prev: 1032943 },
-);
+)
 
 patch(a1, changes)
-assert.deepEqual(a1, a2);
-
+assert.deepEqual(a1, a2)
 ```
 
 ### changes = Pigeon.diff(left, right)
