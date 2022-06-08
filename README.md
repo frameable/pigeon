@@ -102,7 +102,7 @@ Serialize the document to be loaded later.
 
 #### Pigeon.configuire(options)
 
-Set configuration options.  Defaults are as follows...
+Set configuration options.
 
 ```javascript
 Pigeon.configure({
@@ -113,11 +113,12 @@ Pigeon.configure({
 
 ##### `strict`
 
-In order to preserve semantic integrity, any objects which are items in arrays should contain identifier properties named `id`, `_id`, `uuid`, or `slug`, as in the example above.  When objects have identifier properties, change sets will be keyed by those identifiers, and all will be well.  When `strict` is truthy (which is the default), an error will be thrown if we try to compare objects with no identifier properties.  When `strict` is falsy however, changes will be keyed by array indexes as a best effort only, and so property changes may or may not be robust to changes in array item order.
+In order to preserve semantic integrity, any objects which are items in arrays should contain identifier properties named `id`, `_id`, `uuid`, or `slug`, as in the example above.  When objects have identifier properties, change sets will be keyed by those identifiers, and all will be well.  When `strict` is truthy, an error will be thrown if we try to compare objects with no identifier properties.  When `strict` is falsy however, changes will be keyed by array indexes as a best effort only, and so property changes may or may not be robust to changes in array item order.  Defaults to `true`.
 
 ##### `getObjectId`
 
 Callback to return an identifier value, given an object.  By default object identifiers will be sought as shown above, but if your data uses different properties for unique identifiers, you may supply an alternate function for retrieving them.
+
 
 
 ## Operating directly on JSON objects
@@ -150,7 +151,7 @@ assert.deepEqual(a1, a2)
 
 ### changes = Pigeon.diff(left, right)
 
-Compares data structures and returns changes required to make d1's content equal to d2's.  The format of the returned changes is based on [RFC 6902](https://tools.ietf.org/html/rfc6902), with the modification that path components which are array indexes, if they refer to an object, may take the form `[<id>]` where `<id>` is the value of a property meant to uniquely identify that object, with a property named `id`, `_id`, `uuid`, or `slug`.
+Compares data structures and returns changes required to make `left`'s content equal to `right`'s.  The format of the returned changes is based on [RFC 6902](https://tools.ietf.org/html/rfc6902), with the modification that path components which are array indexes, if they refer to an object, may take the form `[<id>]` where `<id>` is the value of a property meant to uniquely identify that object, with a property named `id`, `_id`, `uuid`, or `slug`.
 
 ### left = Pigeon.patch(left, changes)
 
