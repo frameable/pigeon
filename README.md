@@ -38,7 +38,7 @@ assert.deepEqual(merged, {
 Pigeon keeps a near fully-compatible interface to Automerge, but the underlying implementation is optimized for a different use case, and makes different trade-offs.  While Automerge optimizes for working offline and merging changes periodically, Pigeon is optimized for online real-time collaboration.
 
 - By default, history will grow only to 1000 items in length, after which oldest entries will be jettisoned
-- Because of the above, performance is much improved for larger docs with more changes
+- Because of the above, [performance is much improved](https://github.com/frameable/pigeon/wiki/Benchmarks) for larger docs with more changes
 - Changes are computed across entire data structures, rather than tracing via proxies
 - Documents need not have a direct common ancestor for patches from one to apply to another
 - Unix timestamps and client ids are used instead of vector clocks to ensure order and determinism
