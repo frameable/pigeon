@@ -46,6 +46,8 @@ Pigeon keeps a near fully-compatible interface to Automerge, but the underlying 
 - Objects should have unique identifiers in order to preserve semantic integrity
 - Changes may be made in-place for situations where performance is critical
 
+## API
+
 #### newDoc = Pigeon.from(data, cid=_cid)
 
 Create a document from an array or object.
