@@ -3,7 +3,7 @@
 Diff, patch, merge, and synchronize JSON documents with an [Automerge](https://github.com/automerge/automerge)-compatible interface
 
 ```javascript
-const Pigeon = require('pigeon')
+const Pigeon = require('@frameable/pigeon')
 
 // initialize our document from an object literal
 let doc1 = Pigeon.from({
@@ -45,6 +45,14 @@ Pigeon keeps a near fully-compatible interface to Automerge, but the underlying 
 - Change sets use [JSON-Patch](https://tools.ietf.org/html/rfc6902)-esque paths, and so are more easily introspectable using existing tools
 - Objects should have unique identifiers in order to preserve semantic integrity
 - Changes may be made in-place for situations where performance is critical
+
+
+### Installation
+
+```
+npm install @frameable/pigeon
+```
+
 
 ## API
 
@@ -142,7 +150,7 @@ So, for example, if one client's clock is a few seconds slower than another, if 
 Pigeon also exposes methods to diff and patch JSON objects:
 
 ```javascript
-const { diff, patch } = require('pigeon')
+const { diff, patch } = require('@frameable/pigeon')
 
 const a1 = [
   { id: 3920, name: 'Chicago', population: 5239412 },
