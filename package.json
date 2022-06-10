@@ -1,7 +1,7 @@
 {
   "name": "pigeon",
-  "version": "1.3.7",
-  "description": "Semantic diff and patch for JSON suitable for CRDT",
+  "version": "1.4.0",
+  "description": "Diff, patch, merge, and synchronize JSON documents with an Automerge-compatible interface",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -11,12 +11,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/systemsthinkinginstitute/pigeon-json-diff-patch.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/systemsthinkinginstitute/pigeon-json-diff-patch/issues"
-  },
-  "homepage": "https://github.com/systemsthinkinginstitute/pigeon-json-diff-patch#readme"
+    "url": "https://github.com/frameable/pigeon.git"
+  }
 }
