@@ -35,7 +35,7 @@ assert.deepEqual(merged, {
 
 ### Differences from Automerge
 
-Pigeon keeps a near fully-compatible interface to Automerge, but the underlying implementation is optimized for a different use case, and makes different trade-offs:
+Pigeon keeps a near fully-compatible interface to Automerge, but the underlying implementation is optimized for a different use case, and makes different trade-offs.  While Automerge optimizes for working offline and merging changes periodically, Pigeon is optimized for online real-time collaboration.
 
 - By default, history will grow only to 1000 items in length, after which oldest entries will be jettisoned
 - Because of the above, performance is much improved for larger docs with more changes
