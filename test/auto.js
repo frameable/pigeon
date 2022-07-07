@@ -302,6 +302,32 @@ suite('auto', test => {
 
   });
 
+  test('preserve changes array moves', async() => {
+    let doc1 = AutoPigeon.from({
+      cities: [
+        { id: 'bos', name: "Boston", population: '452329', transport: 'T' },
+        { id: 'chi', name: "Chicago", population: '3023429', transport: 'K' },
+        { id: 'dal', name: "Dallas", population: '1393029', transport: '_' },
+      ]
+    });
+
+    let doc2 = AutoPigeon.clone(doc1);
+
+    let doc3 = AutoPigeon.change(doc1, doc => {
+      doc.cities = [
+        doc.cities[0],
+        doc.cities[2],
+        doc.cities[1],
+      ]
+    });
+
+    const c3 = AutoPigeon.getChanges(doc1, doc3);
+    assert.equal(c3.diff.length, 2);
+    doc2 = AutoPigeon.applyChanges(doc2, c3);
+    assert.deepEqual(doc2, doc3, 'changes applied');
+    assert.equal(c3.diff.length, 2);
+  });
+
   test('order changes without ids is messy', async() => {
 
     AutoPigeon.configure({ strict: false });

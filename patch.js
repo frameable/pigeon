@@ -4,6 +4,7 @@ const stash = {};
 
 function patch(data, changes) {
 
+  changes = _clone(changes);
   const conflicts = [];
 
   CHANGE:
