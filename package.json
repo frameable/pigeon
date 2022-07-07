@@ -1,6 +1,6 @@
 {
-  "name": "pigeon",
-  "version": "1.4.2",
+  "name": "@frameable/pigeon",
+  "version": "1.4.3",
   "description": "Diff, patch, merge, and synchronize JSON documents with an Automerge-compatible interface",
   "main": "index.js",
   "directories": {
@@ -11,6 +11,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/frameable/pigeon.git"
-  }
+    "url": "git+https://github.com/frameable/pigeon.git"
+  },
+  "homepage": "https://github.com/frameable/pigeon",
+  "license": "MIT",
+  "keywords": [
+    "json",
+    "crdt",
+    "diff",
+    "patch",
+    "merge",
+    "automerge"
+  ]
 }
