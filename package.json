@@ -1,6 +1,6 @@
 {
   "name": "pigeon",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Diff, patch, merge, and synchronize JSON documents with an Automerge-compatible interface",
   "main": "index.js",
   "directories": {
