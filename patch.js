@@ -1,11 +1,11 @@
 const { _typeof, _clone, _objId, _decodePath } = require('./helpers');
 
-const stash = {};
 
 function patch(data, changes) {
 
   changes = _clone(changes);
   const conflicts = [];
+  let stash = null;
 
   CHANGE:
   for (const [ci, change] of changes.entries()) {
@@ -44,6 +44,7 @@ function patch(data, changes) {
     if (change.op == 'replace') {
       head[tip] = _clone(change.value);
     } else if (change.op == 'move') {
+      stash = {};
       const ops = [
         { op: 'remove', path: change.from },
         { op: 'add', path: change.path, value: stash }
@@ -51,16 +52,22 @@ function patch(data, changes) {
       changes.splice(ci + 1, 0, ...ops);
     } else if (change.op == 'remove') {
       if (type == 'object') {
-        stash.value = _clone(head[tip]);
+        stash && (stash.value = _clone(head[tip]));
         delete head[tip];
       } else if (type == 'array') {
-        [ stash.value ] = head.splice(tip, 1);
+        const value = head.splice(tip, 1);
+        stash && ([ stash.value ] = value);
       }
     } else if (change.op == 'add') {
       if (type == 'object') {
         head[tip] = _clone(change.value);
       } else if (type == 'array') {
-        head.splice(tip, 0, change.value == stash ? stash.value : _clone(change.value));
+        if (change.value == stash) {
+          head.splice(tip, 0, stash.value);
+          stash = null;
+        } else {
+          head.splice(tip, 0, _clone(change.value));
+        }
       }
     }
   }
