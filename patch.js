@@ -62,7 +62,7 @@ function patch(data, changes) {
       if (type == 'object') {
         head[tip] = _clone(change.value);
       } else if (type == 'array') {
-        if (change.value == stash) {
+        if (stash && change.value === stash) {
           head.splice(tip, 0, stash.value);
           stash = null;
         } else {
