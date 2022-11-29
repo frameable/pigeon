@@ -181,5 +181,13 @@ suite('diff', test => {
     );
   })
 
+  test('array re-order and add', async () => {
+    const patch = diff(
+      [{id: 1, name: 'one'}, {id: 2, name: 'two'}, {id: 3, name: 'three'}],
+      [{id: 3, name: 'three'}, {id: 2, name: 'two'}]
+    );
+    assert(patch);
+  })
+
 });
 
