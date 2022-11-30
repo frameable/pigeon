@@ -49,9 +49,8 @@ function diffArray(l, r, path='/') {
   }
 
   const ops = [];
-  let rms = 0;
 
-  for (let i = 0, j = 0; j < r.length || i + rms < l.length;) {
+  for (let i = 0, j = 0; j < r.length || i < l.length;) {
 
     if (j in r && i in l && rlis[j] == i) {
 
@@ -65,7 +64,6 @@ function diffArray(l, r, path='/') {
 
     if (i < l.length && !(i in lris)) {
       ops.push(_op('remove', _path(path, i, l[i]), { _prev: l[i] }));
-      rms++;
       i++;
       continue;
     }
@@ -77,16 +75,20 @@ function diffArray(l, r, path='/') {
     }
 
     if (j < r.length && j in rlis) {
-      ops.push({ op: 'move', from: _path(path, rlis[j], l[rlis[j]]), path: _path(path, j) });
-      if (_typeof(rlis[j]) == 'object') {
-        ops.push(...diffObject(l[rlis[j]], r[j], path));
+      const from = _path(path, rlis[j], l[rlis[j]]);
+      const to = _path(path, j);
+      if (to != from) {
+        ops.push({ op: 'move', from, path: to });
+        if (_typeof(rlis[j]) == 'object') {
+          ops.push(...diffObject(l[rlis[j]], r[j], path));
+        }
       }
-      if (i <= j) i++;
+      i++;
       j++;
       continue;
     }
 
-    throw new Error("couldn't create diff");
+    throw new Error(`couldn't create diff`);
   }
 
   return ops;
