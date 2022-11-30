@@ -6,6 +6,7 @@ require('./reverse');
 require('./auto');
 require('./diff');
 require('./helpers');
+require('./roundtrip');
 
 if ('SUITE' in process.env) {
   suites = suites.filter(s => s.name == process.env.SUITE);

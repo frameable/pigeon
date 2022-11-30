@@ -97,6 +97,7 @@ function _objId(x) {
     if (_config.strict) {
       throw new Error("couldn't find id for object", { cause: x });
     }
+    return _hsh(_stable(x));
   } else {
     return null;
   }
