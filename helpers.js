@@ -94,7 +94,7 @@ function _objId(x) {
   if (_typeof(x) == 'object') {
     const id = _config.getObjectId(x);
     if (id != undefined) return id;
-    if (0 && _config.strict) {
+    if (_config.strict) {
       throw new Error("couldn't find id for object", { cause: x });
     }
     return _hsh(_stable(x));

@@ -2,6 +2,7 @@ const suite = require('./index');
 const assert = require('assert');
 const patch = require('../patch');
 const diff = require('../diff');
+const helpers = require('../helpers');
 
 function random() {
   random._s = random._s || 11224; // seed
@@ -10,7 +11,8 @@ function random() {
 
 suite('roundtrip', async test => {
 
-  /*
+  helpers._configure({ strict: false });
+
   test('array truncate', async () => {
     const initial = [ { email: 'doug@example.com' }, { email: 'jen@example.com' }, { email: 'abhi@example.com' }, { email: 'amber@example.com' } ];
     const target = [ { email: 'doug@example.com' }, { email: 'jen@example.com' } ];
@@ -26,7 +28,6 @@ suite('roundtrip', async test => {
     const adjusted = patch(initial, changes);
     assert.deepEqual(adjusted, target);
   })
-  */
 
   test('array of objects insert', async () => {
     const initial = [ { id: 1 }, { id: 2 } ];
@@ -38,6 +39,21 @@ suite('roundtrip', async test => {
     assert.deepEqual(adjusted, target);
   })
 
+  test('array remove and reorder', async () => {
+    const initial = [{ id: 1, name: 'one' }, { id: 2, name: 'two' }, { id: 3, name: 'three' }];
+    const target = [{ id: 3, name: 'three' }, { id: 2, name: 'two' }];
+    const changes = diff(initial, target);
+    const adjusted = patch(initial, changes);
+    assert.deepEqual(adjusted, target);
+  })
+
+  test('array literal remove and reorder', async () => {
+    const initial = ['one', 'two', 'three'];
+    const target = ['three', 'two'];
+    const changes = diff(initial, target);
+    const adjusted = patch(initial, changes);
+    assert.deepEqual(adjusted, target);
+  })
 
   test('array fuzz', async () => {
 
