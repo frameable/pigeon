@@ -1,6 +1,6 @@
 {
   "name": "@frameable/pigeon",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Diff, patch, merge, and synchronize JSON documents with an Automerge-compatible interface",
   "main": "index.js",
   "directories": {
