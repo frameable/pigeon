@@ -78,6 +78,19 @@ suite('patch', async test => {
       [ 'abc', 'def', 'ghi' ]
     )
   });
+
+  test('array remove and re-order', async () => {
+    assert.deepEqual(
+      patch(
+        [{id: 1, name: 'one'}, {id: 2, name: 'two'}, {id: 3, name: 'three'}],
+        [
+          { op: 'remove', path: '/[1]', _prev: { id: 1, name: 'one' } },
+          { op: 'move', from: '/[3]', path: '/0' }
+        ]
+      ),
+      [{id: 3, name: 'three'}, {id: 2, name: 'two'}]
+    );
+  });
 });
 
 

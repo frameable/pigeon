@@ -181,13 +181,32 @@ suite('diff', test => {
     );
   })
 
-  test('array re-order and add', async () => {
-    const patch = diff(
-      [{id: 1, name: 'one'}, {id: 2, name: 'two'}, {id: 3, name: 'three'}],
-      [{id: 3, name: 'three'}, {id: 2, name: 'two'}]
+  test('array remove and re-order', async () => {
+    assert.deepEqual(
+      diff(
+        [{id: 1, name: 'one'}, {id: 2, name: 'two'}, {id: 3, name: 'three'}],
+        [{id: 3, name: 'three'}, {id: 2, name: 'two'}]
+      ),
+      [
+        { op: 'remove', path: '/[1]', _prev: { id: 1, name: 'one' } },
+        { op: 'move', from: '/[3]', path: '/0' }
+      ]
     );
-    assert(patch);
   })
+
+  test('array remove and re-order literal', async () => {
+    assert.deepEqual(
+      diff(
+        [ 'abc', 'def', 'hij' ],
+        [ 'hij', 'def' ],
+      ),
+      [
+        { op: 'remove', path: '/0', _prev: 'abc' },
+        { op: 'move', from: '/2', path: '/0' }
+      ]
+    );
+  })
+
 
 });
 

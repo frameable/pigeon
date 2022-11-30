@@ -83,6 +83,8 @@ function diffArray(l, r, path='/') {
       j++;
       continue;
     }
+
+    return ops;
   }
 
   return ops;
