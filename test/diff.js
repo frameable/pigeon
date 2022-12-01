@@ -135,6 +135,16 @@ suite('diff', test => {
     );
   })
 
+  test('array of objects append', async () => {
+    assert.deepEqual(
+      diff(
+        [ { id: 1 }, { id: 2 } ],
+        [ { id: 1 }, { id: 2 }, { id: 3 } ]
+      ),
+      [ { op: 'add', path: '/2', value: { id: 3 } } ]
+    );
+  })
+
   test('null to obj', async () => {
     assert.deepEqual(
       diff(
@@ -180,6 +190,65 @@ suite('diff', test => {
       ]
     );
   })
+
+  test('array remove and re-order', async () => {
+    assert.deepEqual(
+      diff(
+        [ { id: 1, name: 'one' }, { id: 2, name: 'two' }, { id: 3, name: 'three' } ],
+        [ { id: 3, name: 'three' }, { id: 2, name: 'two' } ]
+      ),
+      [
+        { op: 'remove', path: '/[1]', _prev: { id: 1, name: 'one' } },
+        { op: 'move', from: '/[3]', path: '/0' },
+        { op: 'move', from: '/[2]', path: '/1' },
+      ]
+    );
+  })
+
+  test('more array remove and re-order', async () => {
+    assert.deepEqual(
+      diff(
+        [ { id: 1, name: 'one' }, { id: 2, name: 'two' }, { id: 3, name: 'three' }, { id: 4, name: 'four' }, { id: 5, name: 'five' } ],
+        [ { id: 3, name: 'three' }, { id: 2, name: 'two' }, { id: 5, name: 'five' } ],
+      ),
+      [
+        { op: 'remove', path: '/[1]', _prev: { id: 1, name: 'one' } },
+        { op: 'move', from: '/[3]', path: '/0' },
+        { op: 'move', from: '/[2]', path: '/1' },
+        { op: 'remove', path: '/[4]', _prev: { id: 4, name: 'four' } },
+      ]
+    );
+  })
+
+  test('array remove and re-order literal', async () => {
+    assert.deepEqual(
+      diff(
+        [ 'abc', 'def', 'hij' ],
+        [ 'hij', 'def' ],
+      ),
+      [
+        { op: 'remove', path: '/0', _prev: 'abc' },
+        { op: 'move', from: '/2', path: '/0' },
+      ]
+    );
+  })
+
+  test('array remove and re-order literal longer', async () => {
+    assert.deepEqual(
+      diff(
+        [ 'abc', 'def', '000', 'hij', 'klm', 'nop' ],
+        [ 'hij', 'nop', 'def', '000', 'klm' ],
+      ),
+      [
+        { _prev: 'abc', op: 'remove', path: '/0' },
+        { from: '/3', op: 'move', path: '/0' },
+        { from: '/5', op: 'move', path: '/1' },
+        { from: '/1', op: 'move', path: '/2' },
+        { from: '/2', op: 'move', path: '/3' }
+      ]
+    );
+  })
+
 
 });
 

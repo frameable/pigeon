@@ -5,6 +5,7 @@ require('./patch');
 require('./reverse');
 require('./auto');
 require('./diff');
+require('./roundtrip');
 require('./helpers');
 require('./roundtrip');
 
