@@ -47,9 +47,9 @@ suite('roundtrip', async test => {
     assert.deepEqual(adjusted, target);
   })
 
-  test('array literal remove and reorder', async () => {
-    const initial = ['one', 'two', 'three'];
-    const target = ['three', 'two'];
+  test('array remove and reorder no ids', async () => {
+    const initial = [{ name: 'one' }, { name: 'two' }, { name: 'three' }];
+    const target = [{ name: 'three' }, { name: 'two' }];
     const changes = diff(initial, target);
     const adjusted = patch(initial, changes);
     assert.deepEqual(adjusted, target);
@@ -60,8 +60,7 @@ suite('roundtrip', async test => {
     const a = [...Array(10).keys()].map(n => ({ id: n + 1 }));
 
 
-    for (const i of Array(12).keys()) {
-      console.log("I", i);
+    for (const i of Array(40).keys()) {
       const a1 = JSON.parse(JSON.stringify(a));
       const a2 = JSON.parse(JSON.stringify(a));
       function ri() {
@@ -85,20 +84,8 @@ suite('roundtrip', async test => {
         }
       }
 
-      const _a1 = JSON.parse(JSON.stringify(a1));
-
       const a3 = patch(a1, diff(a1, a2));
-
-      try {
-        assert.deepEqual(a3, a2);
-      } catch(e) {
-        console.log("E", e);
-        console.log("A1", _a1);
-        console.log("A2", a2);
-        console.log("DIFF", diff(_a1, a2));
-        console.log("A3", a3);
-        process.exit(1);
-      }
+      assert.deepEqual(a3, a2);
     }
 
   });
